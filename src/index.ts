@@ -5,6 +5,7 @@ import { mongo } from "mongoose";
 import startServer from "./server/index.js";
 import app from "./server/app.js";
 import environment from "./loadEnvironment.js";
+import connectDatabase from "./database/index.js";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { MongoServerError } = mongo;
@@ -16,6 +17,9 @@ try {
   debug(
     chalk.yellow(`Server listening on: http://localhost:${environment.port}`)
   );
+
+  await connectDatabase(environment.mongoDbUrl);
+  debug(chalk.green("Connection to database was successfull"));
 } catch (error: unknown) {
   if (error instanceof MongoServerError) {
     debug(
