@@ -1,10 +1,11 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import corsOptions from "./cors/corsOptions";
 
 const app = express();
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.disable("x-powered-by");
 
