@@ -4,9 +4,9 @@ describe("Given the class CustomError", () => {
   describe("When instantiated with message 'Unknown endpoint', 404 status code and public message 'Unknown endpoint'", () => {
     test("Then it should return an object with the same properties", () => {
       const expectedError = {
-        message: "Unknown endpoint",
+        message: "Endpoint not found",
         statusCode: 404,
-        publicMessage: "Unknown endpoint",
+        publicMessage: "Endpoint not found",
       };
 
       const customError = new CustomError(
