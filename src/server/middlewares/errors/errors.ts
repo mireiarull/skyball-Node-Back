@@ -1,4 +1,4 @@
-import "../../loadEnvironment.js";
+import "../../../loadEnvironment.js";
 import type { NextFunction, Request, Response } from "express";
 import debugCreator from "debug";
 
