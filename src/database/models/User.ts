@@ -12,12 +12,15 @@ const userSchema = new Schema({
     type: String,
   },
   name: {
+    required: true,
     type: String,
   },
   gender: {
+    required: true,
     type: String,
   },
   level: {
+    required: true,
     type: Number,
   },
 });
