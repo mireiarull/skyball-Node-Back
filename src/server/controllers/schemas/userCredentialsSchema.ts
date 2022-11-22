@@ -6,6 +6,6 @@ export const userRegisterSchema = {
     email: Joi.string().email().required(),
     name: Joi.string().required(),
     gender: Joi.string().required(),
-    lever: Joi.number().required(),
+    level: Joi.number().required(),
   }),
 };

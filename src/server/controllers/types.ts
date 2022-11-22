@@ -6,5 +6,5 @@ export interface Credentials {
 export interface RegisterCredentials extends Credentials {
   name: string;
   gender: string;
-  level: string;
+  level: number;
 }
