@@ -37,7 +37,7 @@ describe("Given a POST method with /users/register endpoint", () => {
       const expectedStatus = 201;
 
       const response = await request(app)
-        .post("/user/register")
+        .post("/users/register")
         .send(registerData)
         .expect(expectedStatus);
 
@@ -55,7 +55,7 @@ describe("Given a POST method with /users/register endpoint", () => {
       await User.create(registerData);
 
       const response = await request(app)
-        .post("/user/register")
+        .post("/users/register")
         .send(registerData)
         .expect(expectedStatus);
 
@@ -63,7 +63,7 @@ describe("Given a POST method with /users/register endpoint", () => {
     });
   });
 
-  describe("When it receives a request with email '123' that doesn't follow the schema", () => {
+  describe("When it receives a request with email '1234' that doesn't follow the schema", () => {
     test("Then it should respond with a response status 500, and the message 'Wrong data'", async () => {
       const wrongRegisterData = {
         password: "123456",
@@ -77,7 +77,7 @@ describe("Given a POST method with /users/register endpoint", () => {
       await User.create(wrongRegisterData);
 
       const response = await request(app)
-        .post("/user/register")
+        .post("/users/register")
         .send(wrongRegisterData)
         .expect(expectedStatus);
 
