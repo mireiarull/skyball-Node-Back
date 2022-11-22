@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "d4b72040-731d-496d-bba6-4e105a8c4b65",
+		"name": "Skyball",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23874664"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        \"password\": \"123456\",\r\n        \"email\": \"mireia@gmail.com\",\r\n        \"name\": \"mireia\",\r\n        \"gender\": \"f\",\r\n        \"level\": 2\r\n      }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}users/register",
+					"host": [
+						"{{url}}users"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:4000/",
+			"type": "string"
+		}
+	]
+}
