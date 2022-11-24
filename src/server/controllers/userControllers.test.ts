@@ -1,10 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import { registerUser } from "./userControllers";
+import jwt from "jsonwebtoken";
+import { loginUser, registerUser } from "./userControllers";
 import type { UserStructure } from "../../database/models/User";
 import User from "../../database/models/User";
 import CustomError from "../../CustomError/CustomError";
 import mongoose from "mongoose";
+import type { Credentials } from "./types";
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -64,9 +66,9 @@ describe("Given a register controller", () => {
   describe("When it receives an email 'mireia@gmail.com' that already exists", () => {
     test("Then it should next with status 409 and a public message 'User already registered'", async () => {
       const error = new CustomError(
-        "duplicate key",
+        "Duplicate key",
         409,
-        "User already registered"
+        "User is already registered"
       );
 
       User.create = jest.fn().mockRejectedValueOnce(error);
@@ -86,6 +88,72 @@ describe("Given a register controller", () => {
       await registerUser(req as Request, null, next as NextFunction);
 
       expect(next).toHaveBeenCalledWith(bcryptError);
+    });
+  });
+});
+
+describe("Given a loginUser controller", () => {
+  const loginBody: Credentials = {
+    email: "admin@admin.com",
+    password: "admin123",
+  };
+
+  const req: Partial<Request> = {
+    body: loginBody,
+  };
+
+  describe("When it receives a request with an invalid username", () => {
+    test("Then it should invoke the next function with a username error", async () => {
+      User.findOne = jest.fn().mockResolvedValueOnce(null);
+      const usernameError = new CustomError(
+        "Username not found",
+        401,
+        "Wrong credentials"
+      );
+
+      await loginUser(req as Request, res as Response, next as NextFunction);
+
+      expect(next).toBeCalledWith(usernameError);
+    });
+  });
+
+  describe("When it receives a valid email 'admin@admin.com' and the wrong password", () => {
+    test("Then it should invoke the next function with a password error", async () => {
+      User.findOne = jest.fn().mockResolvedValueOnce(loginBody);
+      const passwordError = new CustomError(
+        "Incorrect password",
+        401,
+        "Wrong credentials"
+      );
+
+      bcrypt.compare = jest.fn().mockResolvedValueOnce(false);
+
+      await loginUser(req as Request, res as Response, next as NextFunction);
+
+      expect(next).toBeCalledWith(passwordError);
+    });
+  });
+
+  describe("when it receives a valid email 'admin@admin.com' and a valid password 'admin123'", () => {
+    test("Then it should invoke the response method with a 200 status and its json method with a token", async () => {
+      const user = {
+        email: "admin@admin.com",
+        password: "admin123",
+      };
+      const userId = new mongoose.Types.ObjectId();
+      const expectedStatus = 200;
+      req.body = user;
+
+      const token = jwt.sign({}, "secret");
+
+      User.findOne = jest.fn().mockResolvedValueOnce({ ...user, _id: userId });
+      bcrypt.compare = jest.fn().mockResolvedValueOnce(true);
+      jwt.sign = jest.fn().mockReturnValueOnce(token);
+
+      await loginUser(req as Request, res as Response, null);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatus);
+      expect(res.json).toHaveBeenCalledWith({ token });
     });
   });
 });
