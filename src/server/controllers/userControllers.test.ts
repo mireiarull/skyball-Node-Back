@@ -156,4 +156,24 @@ describe("Given a loginUser controller", () => {
       expect(res.json).toHaveBeenCalledWith({ token });
     });
   });
+
+  describe("when it receives a request with an empty body", () => {
+    test("Then it should call next with a Custom Error with public message 'Wrong credentials' and response status 401", async () => {
+      User.findOne = jest.fn().mockResolvedValueOnce(null);
+
+      const customError = new CustomError(
+        "Username not found",
+        401,
+        "Wrong credentials"
+      );
+
+      const req: Partial<Request> = {
+        body: {},
+      };
+
+      await loginUser(req as Request, res as Response, next as NextFunction);
+
+      expect(next).toBeCalledWith(customError);
+    });
+  });
 });

@@ -55,30 +55,26 @@ export const loginUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+  const user = await User.findOne({ email });
 
-    if (!user) {
-      next(loginUserErrors.userNotFound);
-      return;
-    }
-
-    if (!(await bcrypt.compare(password, user.password))) {
-      next(loginUserErrors.incorrectPassword);
-      return;
-    }
-
-    const tokenPayload: UserTokenPayload = {
-      email,
-      id: user._id.toString(),
-    };
-
-    const token = jwt.sign(tokenPayload, environment.jwtSecret);
-
-    res.status(200).json({ token });
-  } catch (error: unknown) {
-    next(error);
+  if (!user) {
+    next(loginUserErrors.userNotFound);
+    return;
   }
+
+  if (!(await bcrypt.compare(password, user.password))) {
+    next(loginUserErrors.incorrectPassword);
+    return;
+  }
+
+  const tokenPayload: UserTokenPayload = {
+    email,
+    id: user._id.toString(),
+  };
+
+  const token = jwt.sign(tokenPayload, environment.jwtSecret);
+
+  res.status(200).json({ token });
 };
