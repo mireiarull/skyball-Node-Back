@@ -1,5 +1,4 @@
 import environment from "../loadEnvironment.js";
-
 import mongoose from "mongoose";
 
 const connectDatabase = async (url: string) => {

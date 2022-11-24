@@ -59,7 +59,10 @@ describe("Given a POST method with /users/register endpoint", () => {
         .send(registerData)
         .expect(expectedStatus);
 
-      expect(response.body).toHaveProperty("error", "User already registered");
+      expect(response.body).toHaveProperty(
+        "error",
+        "User is already registered"
+      );
     });
   });
 
