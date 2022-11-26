@@ -1,21 +1,13 @@
 import type { InferSchemaType } from "mongoose";
 import { Schema, model } from "mongoose";
 
-const locationSchema = new Schema({
-  loc: {
-    type: { type: String },
-    coordinates: [],
-  },
-});
-
-locationSchema.index({ loc: "2dsphere" });
 
 const gameSchema = new Schema({
   date: {
     required: true,
     type: Date,
   },
-  location: locationSchema,
+  location: { type: { type: String }, coordinates: [Number] },
   level: {
     required: true,
     type: Number,
@@ -35,7 +27,7 @@ const gameSchema = new Schema({
   description: {
     type: String,
   },
-  players: {
+  players: [{
     userId: {
       type: Schema.Types.ObjectId,
     },
@@ -45,8 +37,10 @@ const gameSchema = new Schema({
     material: {
       type: Array,
     },
-  },
+  }]
 });
+
+gameSchema.index({ location: "2dsphere" });
 
 export type GameStructure = InferSchemaType<typeof gameSchema>;
 

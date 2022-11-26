@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import Game from "../../../database/models/Game";
+import { getRandomGameList } from "../../../factories/gamesFactory";
 import { getAllGames } from "./gameControllers";
 
 const req: Partial<Request> = {
@@ -13,29 +14,7 @@ const res: Partial<Response> = {
 
 const next = jest.fn();
 
-const gameList = [
-  {
-    players: [
-      {
-        userId: "637f7cb25d194a522132e02d",
-        rol: "owner",
-        material: ["net"],
-      },
-    ],
-    date: "2011-09-16T10:05:17.000Z",
-    location: {
-      type: "Point",
-      coordinates: [41.393832352040285, 2.2061303160935806],
-      id: "6381eb3a9a8249a7937fa97f",
-    },
-    level: 2,
-    gender: "female",
-    format: "2x2",
-    spots: 6,
-    description: "test game",
-    id: "6381e5ebf5cf836c397d4d82",
-  },
-];
+const gameList = getRandomGameList(2);
 
 describe("Given a getAllGames controller", () => {
   describe("When it receives a request", () => {
