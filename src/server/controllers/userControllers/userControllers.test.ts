@@ -2,9 +2,9 @@ import type { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { loginUser, registerUser } from "./userControllers";
-import type { UserStructure } from "../../database/models/User";
-import User from "../../database/models/User";
-import CustomError from "../../CustomError/CustomError";
+import type { UserStructure } from "../../../database/models/User";
+import User from "../../../database/models/User";
+import CustomError from "../../../CustomError/CustomError";
 import mongoose from "mongoose";
 import type { Credentials } from "./types";
 
@@ -141,7 +141,7 @@ describe("Given a loginUser controller", () => {
         password: "admin123",
       };
       const userId = new mongoose.Types.ObjectId();
-      const expectedStatus = 200;
+      const expectedStatus = 201;
       req.body = user;
 
       const token = jwt.sign({}, "secret");

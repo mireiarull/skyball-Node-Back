@@ -1,12 +1,15 @@
-import "../../loadEnvironment";
+import "../../../loadEnvironment";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import request from "supertest";
-import type { Credentials, RegisterCredentials } from "../controllers/types";
-import User from "../../database/models/User";
-import connectDatabase from "../../database";
-import app from "../app";
+import type {
+  Credentials,
+  RegisterCredentials,
+} from "../../controllers/userControllers/types";
+import User from "../../../database/models/User";
+import connectDatabase from "../../../database";
+import app from "../../app";
 
 let server: MongoMemoryServer;
 
@@ -107,7 +110,7 @@ describe("Given a POST method with /users/login endpoint", () => {
         gender: "F",
         level: 2,
       };
-      const expectedStatus = 200;
+      const expectedStatus = 201;
 
       await User.create(newUser);
 

@@ -3,20 +3,24 @@ import { validate } from "express-validation";
 import {
   userLoginSchema,
   userRegisterSchema,
-} from "../controllers/schemas/userCredentialsSchema.js";
-import { loginUser, registerUser } from "../controllers/userControllers.js";
+} from "../../controllers/schemas/userCredentialsSchema.js";
+import {
+  loginUser,
+  registerUser,
+} from "../../controllers/userControllers/userControllers.js";
+import routes from "../routes.js";
 
 // eslint-disable-next-line new-cap
 const userRouter = express.Router();
 
 userRouter.post(
-  "/register",
+  routes.registerRoute,
   validate(userRegisterSchema, {}, { abortEarly: false }),
   registerUser
 );
 
 userRouter.post(
-  "/login",
+  routes.loginRoute,
   validate(userLoginSchema, {}, { abortEarly: false }),
   loginUser
 );
