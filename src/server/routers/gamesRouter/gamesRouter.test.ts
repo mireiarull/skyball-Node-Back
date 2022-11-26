@@ -1,21 +1,21 @@
 import "../../../loadEnvironment";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 import request from "supertest";
-import type {
-  Credentials,
-  RegisterCredentials,
-} from "../../controllers/userControllers/types";
 import User from "../../../database/models/User";
-import connectDatabase from "../../../database/connectDb";
+import connectDatabase from "../../../database/connectDatabase";
 import app from "../../app";
+import { getRandomGameList } from "../../../factories/gamesFactory";
+import Game from "../../../database/models/Game";
 
 let server: MongoMemoryServer;
+const games = getRandomGameList(3);
 
 beforeAll(async () => {
   server = await MongoMemoryServer.create();
   await connectDatabase(server.getUri());
+
+  await Game.create(games);
 });
 
 beforeEach(async () => {
@@ -27,27 +27,17 @@ afterAll(async () => {
   await server.stop();
 });
 
-// Describe("Given a GET method with /games/list endpoint", () => {
-//   const registerData: RegisterCredentials = {
-//     password: "123456",
-//     email: "mireia@gmail.com",
-//     name: "mireia",
-//     gender: "f",
-//     level: 2,
-//   };
+describe("Given a GET method with /games/list endpoint", () => {
+  describe("When it receives a request and there are three games in the database", () => {
+    test("Then it should respond with a 200 status and a list of three games", async () => {
+      const expectedStatus = 200;
 
-//   describe("When it receives a request password '123456' and email 'mireia@gmail.com'", () => {
-//     test("Then it should respond with a 201 status and the email 'mireia@gmail.com' and id", async () => {
-//       const expectedStatus = 201;
+      const response = await request(app)
+        .get("/games/list")
+        .expect(expectedStatus);
 
-//       const response = await request(app)
-//         .post("/users/register")
-//         .send(registerData)
-//         .expect(expectedStatus);
-
-//       const newUser = await User.findOne({ email: registerData.email });
-
-//       expect(response.body).toHaveProperty("email", registerData.email);
-//       expect(response.body).toHaveProperty("id", newUser.id);
-//     });
-//   });
+      expect(response.body).toHaveProperty("games");
+      expect(response.body.games).toHaveLength(3);
+    });
+  });
+});

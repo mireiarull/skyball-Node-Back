@@ -4,7 +4,7 @@ import debugCreator from "debug";
 import { mongo } from "mongoose";
 import startServer from "./server/startServer.js";
 import app from "./server/app.js";
-import connectDatabase from "./database/connectDb.js";
+import connectDatabase from "./database/connectDatabase.js";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { MongoServerError } = mongo;

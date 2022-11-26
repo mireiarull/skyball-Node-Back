@@ -12,10 +12,7 @@ const gamesFactory = Factory.define<GameStructure>(() => ({
   description: faker.lorem.sentence(),
   location: {
     type: "Point",
-    coordinates: [
-      faker.address.nearbyGPSCoordinate(),
-      faker.address.nearbyGPSCoordinate(),
-    ],
+    coordinates: [11.111111111111111, 11.111111111111111],
   },
   players: [
     {
