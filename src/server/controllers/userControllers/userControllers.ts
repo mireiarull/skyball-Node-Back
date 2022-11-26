@@ -1,17 +1,17 @@
-import "../../loadEnvironment.js";
+import "../../../loadEnvironment.js";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import type { Error } from "mongoose";
-import CustomError from "../../CustomError/CustomError.js";
-import User from "../../database/models/User.js";
+import CustomError from "../../../CustomError/CustomError.js";
+import User from "../../../database/models/User.js";
 import type { Credentials, RegisterCredentials } from "./types.js";
-import type { UserTokenPayload } from "../../types.js";
-import environment from "../../loadEnvironment.js";
+import type { UserTokenPayload } from "../../../types.js";
+import environment from "../../../loadEnvironment.js";
 import {
   loginUserErrors,
   registerUserErrors,
-} from "../../CustomError/errors.js";
+} from "../../../CustomError/errors.js";
 
 export const registerUser = async (
   req: Request,
@@ -76,5 +76,5 @@ export const loginUser = async (
 
   const token = jwt.sign(tokenPayload, environment.jwtSecret);
 
-  res.status(200).json({ token });
+  res.status(201).json({ token });
 };
