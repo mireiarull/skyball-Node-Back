@@ -8,7 +8,7 @@ import type {
   RegisterCredentials,
 } from "../../controllers/userControllers/types";
 import User from "../../../database/models/User";
-import connectDatabase from "../../../database";
+import connectDatabase from "../../../database/connectDb";
 import app from "../../app";
 
 let server: MongoMemoryServer;

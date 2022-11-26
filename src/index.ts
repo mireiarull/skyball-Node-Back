@@ -2,9 +2,9 @@ import environment from "./loadEnvironment.js";
 import chalk from "chalk";
 import debugCreator from "debug";
 import { mongo } from "mongoose";
-import startServer from "./server/index.js";
+import startServer from "./server/startServer.js";
 import app from "./server/app.js";
-import connectDatabase from "./database/index.js";
+import connectDatabase from "./database/connectDb.js";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { MongoServerError } = mongo;
