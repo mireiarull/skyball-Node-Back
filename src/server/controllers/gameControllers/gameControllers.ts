@@ -31,19 +31,18 @@ export const addOneGame = async (
   res: Response,
   next: NextFunction
 ) => {
+  const { userId } = req;
   const game = req.body as GameStructure;
 
   try {
-    const newGame = await Game.create(game);
+    const newGame = await Game.create({ ...game, owner: userId });
 
-    res
-      .status(201)
-      .json({
-        ...newGame.toJSON(),
-        image: game.image
-          ? `${req.protocol}://${req.get("host")}/${game.image}`
-          : "",
-      });
+    res.status(201).json({
+      ...newGame.toJSON(),
+      image: game.image
+        ? `${req.protocol}://${req.get("host")}/${game.image}`
+        : "",
+    });
   } catch (error: unknown) {
     debug((error as Error).message);
     const customError = new CustomError(
