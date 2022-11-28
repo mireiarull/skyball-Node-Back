@@ -3,28 +3,28 @@ import { Schema, model } from "mongoose";
 
 const gameSchema = new Schema({
   date: {
-    // Required: true,
+    required: true,
     type: String,
   },
   location: { type: { type: String }, coordinates: [Number] },
   beachName: {
-    // Required: true,
+    required: true,
     type: String,
   },
   level: {
-    // Required: true,
+    required: true,
     type: Number,
   },
   gender: {
-    // Required: true,
+    required: true,
     type: String,
   },
   format: {
-    // Required: true,
+    required: true,
     type: Number,
   },
   spots: {
-    // Required: true,
+    required: true,
     type: Number,
   },
   description: {
