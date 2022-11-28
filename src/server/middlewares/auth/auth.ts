@@ -1,7 +1,7 @@
 import type { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
-import CustomError from "../../../CustomError/CustomError";
-import environment from "../../../loadEnvironment";
+import CustomError from "../../../CustomError/CustomError.js";
+import environment from "../../../loadEnvironment.js";
 import type { CustomRequest, UserTokenPayload } from "../../../types";
 
 const auth = (req: CustomRequest, res: Response, next: NextFunction) => {
