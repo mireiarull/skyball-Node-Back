@@ -2,8 +2,7 @@ import type { InferSchemaType } from "mongoose";
 import { Schema, model } from "mongoose";
 
 const gameSchema = new Schema({
-  date: {
-    required: true,
+  dateTime: {
     type: String,
   },
   location: { type: { type: String }, coordinates: [Number] },
