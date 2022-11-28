@@ -21,8 +21,14 @@ jobs:
           DEBUG: ${{ secrets.DEBUG }}
           MONGODB_URL: ${{ secrets.MONGODB_URL }}
           JWT_SECRET: ${{secrets.JWT_SECRET}}
+          SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          SUPABASE_BUCKET_ID: ${{secrets.SUPABASE_BUCKET_ID}}
+          SUPABASE_API_KEY: ${{secrets.SUPABASE_API_KEY}}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          SUPABASE_BUCKET_ID: ${{secrets.SUPABASE_BUCKET_ID}}
+          SUPABASE_API_KEY: ${{secrets.SUPABASE_API_KEY}}

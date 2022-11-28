@@ -1,4 +1,4 @@
-import "../../../loadEnvironment.js";
+import environment from "../../../loadEnvironment.js";
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
@@ -7,7 +7,6 @@ import CustomError from "../../../CustomError/CustomError.js";
 import User from "../../../database/models/User.js";
 import type { Credentials, RegisterCredentials } from "./types.js";
 import type { UserTokenPayload } from "../../../types.js";
-import environment from "../../../loadEnvironment.js";
 import {
   loginUserErrors,
   registerUserErrors,

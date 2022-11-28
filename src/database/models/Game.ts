@@ -1,13 +1,16 @@
 import type { InferSchemaType } from "mongoose";
 import { Schema, model } from "mongoose";
 
-
 const gameSchema = new Schema({
   date: {
     required: true,
-    type: Date,
+    type: String,
   },
   location: { type: { type: String }, coordinates: [Number] },
+  beachName: {
+    required: true,
+    type: String,
+  },
   level: {
     required: true,
     type: Number,
@@ -18,7 +21,7 @@ const gameSchema = new Schema({
   },
   format: {
     required: true,
-    type: String,
+    type: Number,
   },
   spots: {
     required: true,
@@ -27,17 +30,34 @@ const gameSchema = new Schema({
   description: {
     type: String,
   },
-  players: [{
-    userId: {
-      type: Schema.Types.ObjectId,
+  players: [
+    {
+      userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      rol: {
+        type: String,
+      },
+      material: {
+        net: {
+          type: Boolean,
+        },
+        ball: {
+          type: Boolean,
+        },
+        rods: {
+          type: Boolean,
+        },
+      },
     },
-    rol: {
-      type: String,
-    },
-    material: {
-      type: Array,
-    },
-  }]
+  ],
+  image: {
+    type: String,
+  },
+  backupImage: {
+    type: String,
+  },
 });
 
 gameSchema.index({ location: "2dsphere" });
