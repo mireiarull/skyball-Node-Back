@@ -9,6 +9,7 @@ export interface CustomRequest<
 > extends Request<P, ResBody, ReqBody> {
   userId: string;
 }
+
 export interface UserTokenPayload extends JwtPayload {
   id: string;
   email: string;

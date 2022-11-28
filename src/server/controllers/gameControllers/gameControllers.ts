@@ -3,6 +3,7 @@ import CustomError from "../../../CustomError/CustomError.js";
 import debugCreator from "debug";
 import type { GameStructure } from "../../../database/models/Game.js";
 import Game from "../../../database/models/Game.js";
+import type { CustomRequest } from "../../../types.js";
 
 const debug = debugCreator("skyball: controllers: games");
 
@@ -26,7 +27,7 @@ export const getAllGames = async (
 };
 
 export const addOneGame = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -35,7 +36,14 @@ export const addOneGame = async (
   try {
     const newGame = await Game.create(game);
 
-    res.status(201).json(newGame);
+    res
+      .status(201)
+      .json({
+        ...newGame.toJSON(),
+        image: game.image
+          ? `${req.protocol}://${req.get("host")}/${game.image}`
+          : "",
+      });
   } catch (error: unknown) {
     debug((error as Error).message);
     const customError = new CustomError(

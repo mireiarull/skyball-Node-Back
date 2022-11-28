@@ -6,6 +6,7 @@ import {
   getAllGames,
 } from "../../controllers/gameControllers/gameControllers.js";
 import auth from "../../middlewares/auth/auth.js";
+import handleImage from "../../middlewares/images/handleImage.js";
 import routes from "../routes.js";
 
 // eslint-disable-next-line new-cap
@@ -16,6 +17,12 @@ const upload = multer({
 });
 
 gameRouter.get(routes.listGames, getAllGames);
-gameRouter.post(routes.addGame, auth, upload.single("image"), addOneGame);
+gameRouter.post(
+  routes.addGame,
+  auth,
+  upload.single("image"),
+  handleImage,
+  addOneGame
+);
 
 export default gameRouter;
