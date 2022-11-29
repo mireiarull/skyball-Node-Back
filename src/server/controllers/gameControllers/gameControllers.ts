@@ -26,6 +26,27 @@ export const getAllGames = async (
   }
 };
 
+export const getOneGame = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { gameId } = req.params;
+
+  try {
+    const game = await Game.findById(gameId);
+
+    if (!game) {
+      next(new CustomError("Game not found", 404, "Game not found"));
+      return;
+    }
+
+    res.status(200).json(game);
+  } catch (error: unknown) {
+    next(new CustomError((error as Error).message, 500, "Database error"));
+  }
+};
+
 export const addOneGame = async (
   req: CustomRequest,
   res: Response,
