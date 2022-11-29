@@ -4,6 +4,7 @@ import path from "path";
 import {
   addOneGame,
   getAllGames,
+  getOneGame,
 } from "../../controllers/gameControllers/gameControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import handleImage from "../../middlewares/images/handleImage.js";
@@ -15,11 +16,12 @@ const gameRouter = express.Router();
 const upload = multer({
   dest: path.join("assets", "images"),
   limits: {
-    fileSize: 8000000, // Compliant: 8MB
+    fileSize: 8000000,
   },
 });
 
 gameRouter.get(routes.listGames, getAllGames);
+gameRouter.get(routes.detailGame, auth, getOneGame);
 gameRouter.post(
   routes.addGame,
   auth,

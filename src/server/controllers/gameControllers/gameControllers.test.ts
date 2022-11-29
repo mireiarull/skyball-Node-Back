@@ -1,11 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
+import CustomError from "../../../CustomError/CustomError";
 import Game from "../../../database/models/Game";
 import {
   getRandomGame,
   getRandomGameList,
 } from "../../../factories/gamesFactory";
-import type { CustomRequest } from "../../../types";
-import { addOneGame, getAllGames } from "./gameControllers";
+import type { CustomRequest, GamesRequestWithId } from "../../../types";
+import { addOneGame, getAllGames, getOneGame } from "./gameControllers";
 
 const req: Partial<CustomRequest> = {
   userId: "1234",
@@ -81,6 +82,68 @@ describe("Given a addOneGame controller", () => {
       );
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given a getOneGame controller", () => {
+  const newGame = getRandomGame() as GamesRequestWithId;
+  const req: Partial<CustomRequest> = {
+    params: { gameId: newGame._id },
+  };
+
+  describe("When it receives a request with a game id from an authorized user", () => {
+    test("Then it should invoke its response's method status with 200 and json with the game", async () => {
+      const expectedStatus = 200;
+
+      Game.findById = jest.fn().mockReturnValue(newGame);
+
+      await getOneGame(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatus);
+      expect(res.json).toHaveBeenCalledWith({ games: gameList });
+    });
+  });
+
+  describe("When it receives a request and Game.findbyId rejects", () => {
+    test("Then next should be invoked with an error", async () => {
+      Game.findById = jest.fn().mockResolvedValue(undefined);
+
+      await getOneGame(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      const newCustomError = new CustomError(
+        "Game not found",
+        404,
+        "Game not found"
+      );
+
+      expect(next).toHaveBeenCalledWith(newCustomError);
+    });
+  });
+
+  describe("When it receives a request with no id in the params", () => {
+    test("Then it should call the next with a Custom Error", async () => {
+      const req: Partial<CustomRequest> = {
+        params: { gameId: "" },
+      };
+
+      Game.findById = jest.fn().mockRejectedValue(new Error(""));
+
+      await getOneGame(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalled();
     });
   });
 });
