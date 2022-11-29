@@ -1,9 +1,9 @@
 import { Factory } from "fishery";
 import { faker } from "@faker-js/faker";
 import mongoose from "mongoose";
-import type { GameStructure } from "../database/models/Game";
+import type { GameStructureWithId } from "../server/controllers/gameControllers/types";
 
-const gamesFactory = Factory.define<GameStructure>(() => ({
+const gamesFactory = Factory.define<GameStructureWithId>(() => ({
   dateTime: faker.datatype.string(),
   format: faker.datatype.number({ min: 2, max: 6 }),
   gender: faker.name.gender(),
@@ -28,6 +28,7 @@ const gamesFactory = Factory.define<GameStructure>(() => ({
   ],
   image: faker.random.alphaNumeric(),
   backupImage: faker.random.alphaNumeric(),
+  _id: new mongoose.Types.ObjectId().toString(),
 }));
 
 export const getRandomGame = () => gamesFactory.build();
