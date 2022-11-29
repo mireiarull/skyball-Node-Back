@@ -54,7 +54,7 @@ describe("Given a GET method with /games/list endpoint", () => {
   });
 });
 
-describe("Given a GET method with /games/12345 endpoint", () => {
+describe("Given a GET method with /games/id endpoint", () => {
   describe("When it receives a request with a game id and it exists in the database", () => {
     test("Then it should respond with a 200 status and the game", async () => {
       const expectedStatus = 200;
@@ -68,6 +68,36 @@ describe("Given a GET method with /games/12345 endpoint", () => {
         .expect(expectedStatus);
 
       expect(response.body).toHaveProperty("id", newGame._id);
+    });
+  });
+
+  describe("When it receives a request with an invalid token", () => {
+    test("Then it should respond with a 401 status and an error", async () => {
+      const expectedStatus = 401;
+      const newGame: GameStructureWithId = games[0];
+
+      await Game.create(games);
+
+      const response = await request(app)
+        .get(`/games/${newGame._id}`)
+        .set("Authorization", "Bearer ")
+        .expect(expectedStatus);
+
+      expect(response.body).toHaveProperty("error");
+    });
+  });
+
+  describe("When it receives a request with valid token and there are 0 games matching the id in the database", () => {
+    test("Then it should respond with a session and status 404", async () => {
+      const expectedStatus = 404;
+      const newGame: GameStructureWithId = games[0];
+
+      const response = await request(app)
+        .get(`/games/${newGame._id}`)
+        .set("Authorization", `Bearer ${requestUserToken}`)
+        .expect(expectedStatus);
+
+      expect(response.body).toHaveProperty("error");
     });
   });
 });
