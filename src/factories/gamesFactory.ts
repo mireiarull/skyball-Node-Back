@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import type { GameStructure } from "../database/models/Game";
 
 const gamesFactory = Factory.define<GameStructure>(() => ({
-  date: faker.datatype.string(),
+  dateTime: faker.datatype.string(),
   format: faker.datatype.number({ min: 2, max: 6 }),
   gender: faker.name.gender(),
   level: faker.datatype.number(),
