@@ -8,5 +8,5 @@ export interface RegisterCredentials extends Credentials {
   name: string;
   gender: string;
   level: number;
-  _id: mongoose.Types.ObjectId;
+  _id?: mongoose.Types.ObjectId;
 }

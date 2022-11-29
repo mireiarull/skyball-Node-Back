@@ -12,7 +12,7 @@ const supaBase = createClient(supabaseUrl, supabaseKey);
 
 const bucket = supaBase.storage.from(supabaseBucketId);
 
-const handleImage = async (
+const backupImage = async (
   req: CustomRequest<
     Record<string, unknown>,
     Record<string, unknown>,
@@ -54,4 +54,4 @@ const handleImage = async (
   }
 };
 
-export default handleImage;
+export default backupImage;
