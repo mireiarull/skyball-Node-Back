@@ -31,7 +31,9 @@ afterAll(async () => {
 jest.mock("sharp", () => () => ({
   resize: jest.fn().mockReturnValue({
     webp: jest.fn().mockReturnValue({
-      toFile: mockedFile,
+      toFormat: jest.fn().mockReturnValue({
+        toFile: mockedFile,
+      }),
     }),
   }),
 }));
@@ -44,6 +46,7 @@ describe("Given an imageResize middleware", () => {
       await imageResize(req as CustomRequest, null, next);
 
       expect(next).toHaveBeenCalled();
+      expect(req.file.filename).toContain(`.webp`);
     });
   });
 

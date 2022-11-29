@@ -2,9 +2,9 @@ import { createClient } from "@supabase/supabase-js";
 import fs from "fs/promises";
 import type { NextFunction, Response } from "express";
 import path from "path";
-import environment from "../../../loadEnvironment.js";
-import type { CustomRequest } from "../../../types.js";
-import type { GameStructure } from "../../../database/models/Game.js";
+import environment from "../../../../loadEnvironment.js";
+import type { CustomRequest } from "../../../../types.js";
+import type { GameStructure } from "../../../../database/models/Game.js";
 
 const { supabaseBucketId, supabaseKey, supabaseUrl } = environment;
 
@@ -12,7 +12,7 @@ const supaBase = createClient(supabaseUrl, supabaseKey);
 
 const bucket = supaBase.storage.from(supabaseBucketId);
 
-const backupImage = async (
+const imageBackup = async (
   req: CustomRequest<
     Record<string, unknown>,
     Record<string, unknown>,
@@ -54,4 +54,4 @@ const backupImage = async (
   }
 };
 
-export default backupImage;
+export default imageBackup;

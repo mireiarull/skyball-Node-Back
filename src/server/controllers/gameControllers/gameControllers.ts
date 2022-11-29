@@ -60,9 +60,7 @@ export const addOneGame = async (
 
     res.status(201).json({
       ...newGame.toJSON(),
-      image: game.image
-        ? `${req.protocol}://${req.get("host")}/${game.image}`
-        : "",
+      image: newGame.image,
     });
   } catch (error: unknown) {
     debug((error as Error).message);

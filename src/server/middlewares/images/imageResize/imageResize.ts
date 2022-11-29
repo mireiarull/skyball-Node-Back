@@ -10,7 +10,6 @@ const imageResize = async (
   next: NextFunction
 ) => {
   const { originalname, filename } = req.file;
-
   try {
     await sharp(path.join("assets/images", filename))
       .resize(320, 180, { fit: "cover" })
