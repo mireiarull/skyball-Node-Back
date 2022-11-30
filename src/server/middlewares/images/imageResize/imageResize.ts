@@ -2,28 +2,33 @@ import type { NextFunction, Response } from "express";
 import path from "path";
 import sharp from "sharp";
 import CustomError from "../../../../CustomError/CustomError.js";
-import type { CustomRequest } from "../../../../types";
+import type { CustomRequest } from "../../../../types.js";
+import routes from "../../../routers/routes.js";
 
 const imageResize = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
-  const { originalname, filename } = req.file;
+  const { filename } = req.file;
+
   try {
-    await sharp(path.join("assets/images", filename))
+    const fileExtension = path.extname(req.file.filename);
+    const fileBaseName = path.basename(req.file.filename, fileExtension);
+    const newFileName = `${fileBaseName}`;
+
+    await sharp(path.join(routes.uploadPath, filename))
       .resize(320, 180, { fit: "cover" })
       .webp({ quality: 90 })
       .toFormat("webp")
-      .toFile(path.join("assets/images", `${originalname}.webp`));
+      .toFile(path.join(routes.uploadPath, `${newFileName}.webp`));
 
-    req.file.filename = `${originalname}.webp`;
-    req.file.originalname = `${originalname}.webp`;
+    req.body.image = `${newFileName}.webp`;
 
     next();
-  } catch {
+  } catch (error: unknown) {
     const newError = new CustomError(
-      "Couldn't compress the image",
+      (error as Error).message,
       500,
       "Couldn't compress the image"
     );

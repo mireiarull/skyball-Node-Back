@@ -88,7 +88,7 @@ describe("Given a GET method with /games/id endpoint", () => {
   });
 
   describe("When it receives a request with valid token and there are 0 games matching the id in the database", () => {
-    test("Then it should respond with a session and status 404", async () => {
+    test("Then it should respond with a game and status 404", async () => {
       const expectedStatus = 404;
       const newGame: GameStructureWithId = games[0];
 

@@ -1,16 +1,17 @@
-import { createClient } from "@supabase/supabase-js";
-import fs from "fs/promises";
 import type { NextFunction, Response } from "express";
+import fs from "fs/promises";
 import path from "path";
-import environment from "../../../../loadEnvironment.js";
-import type { CustomRequest } from "../../../../types.js";
-import type { GameStructure } from "../../../../database/models/Game.js";
+import { createClient } from "@supabase/supabase-js";
+import { environment } from "../../../../loadEnvironment.js";
+import type { CustomRequest } from "../../../../types";
+import type { GameStructure } from "../../../../database/models/Game";
+import routes from "../../../routers/routes.js";
 
 const { supabaseBucketId, supabaseKey, supabaseUrl } = environment;
 
 const supaBase = createClient(supabaseUrl, supabaseKey);
 
-const bucket = supaBase.storage.from(supabaseBucketId);
+export const bucket = supaBase.storage.from(supabaseBucketId);
 
 const imageBackup = async (
   req: CustomRequest<
@@ -21,31 +22,20 @@ const imageBackup = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.file) {
-    next();
-    return;
-  }
-
-  const newFilePath = path.join(
-    "assets",
-    "images",
-    req.file.filename + req.file.originalname
-  );
+  const { image } = req.body;
 
   try {
-    await fs.rename(
-      path.join("assets", "images", req.file.filename),
-      newFilePath
+    const mainImage = image;
+    const fileContent = await fs.readFile(
+      path.join(routes.uploadPath, mainImage)
     );
-    const fileContent = await fs.readFile(newFilePath);
 
-    await bucket.upload(req.file.filename + req.file.originalname, fileContent);
+    await bucket.upload(mainImage, fileContent);
 
     const {
       data: { publicUrl },
-    } = bucket.getPublicUrl(req.file.filename + req.file.originalname);
+    } = bucket.getPublicUrl(mainImage);
 
-    req.body.image = newFilePath;
     req.body.backupImage = publicUrl;
 
     next();
