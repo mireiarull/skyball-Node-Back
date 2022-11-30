@@ -2,7 +2,6 @@ import type { NextFunction } from "express";
 import fs from "fs/promises";
 import { getRandomGame } from "../../../../factories/gamesFactory";
 import type { CustomRequest } from "../../../../types";
-
 import imageBackup, { bucket } from "./imageBackup";
 
 const newGame = getRandomGame();
@@ -23,9 +22,12 @@ describe("Given a imageBackup middleware", () => {
     test("Then it should rename the file, upload it to supabase and call next", async () => {
       fs.readFile = jest.fn().mockResolvedValueOnce(newGame.image);
 
+      bucket.upload = jest.fn();
+
       bucket.getPublicUrl = jest.fn().mockReturnValueOnce({
         data: { publicUrl: newGame.image },
       });
+
       await imageBackup(req as CustomRequest, null, next);
       expect(next).toHaveBeenCalled();
     });
