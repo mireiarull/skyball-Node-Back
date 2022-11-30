@@ -7,23 +7,23 @@ const gameSchema = new Schema({
   },
   location: { type: { type: String }, coordinates: [Number] },
   beachName: {
-    required: true,
+    // Required: true,
     type: String,
   },
   level: {
-    required: true,
+    // Required: true,
     type: Number,
   },
   gender: {
-    required: true,
+    // Required: true,
     type: String,
   },
   format: {
-    required: true,
+    // Required: true,
     type: Number,
   },
   spots: {
-    required: true,
+    // Required: true,
     type: Number,
   },
   description: {

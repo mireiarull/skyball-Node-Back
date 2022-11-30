@@ -1,11 +1,28 @@
 import type { NextFunction } from "express";
 import fs from "fs/promises";
-import CustomError from "../../../../CustomError/CustomError";
 import { getRandomGame } from "../../../../factories/gamesFactory";
 import type { CustomRequest } from "../../../../types";
+import routes from "../../../routers/routes";
 import imageResize from "./imageResize";
 
 const newGame = getRandomGame();
+
+let mockToFile = jest.fn();
+
+jest.mock("sharp", () => () => ({
+  resize: jest.fn().mockReturnValue({
+    webp: jest.fn().mockReturnValue({
+      toFormat: jest.fn().mockReturnValue({
+        toFile: mockToFile,
+      }),
+    }),
+  }),
+}));
+
+const file: Partial<Express.Multer.File> = {
+  filename: "test",
+  originalname: "testjpg",
+};
 
 const req: Partial<CustomRequest> = {
   body: newGame,
@@ -13,59 +30,36 @@ const req: Partial<CustomRequest> = {
 
 const next = jest.fn() as NextFunction;
 
-const file: Partial<Express.Multer.File> = {
-  filename: "test",
-  originalname: "originalTest",
-};
-
-let mockedFile = jest.fn();
-
 beforeAll(async () => {
-  await fs.writeFile("assets/randomsession", "randomsession");
+  await fs.writeFile(`${routes.uploadPath}/randomgame`, "randomgame");
 });
 
 afterAll(async () => {
-  await fs.unlink("assets/randomsession");
+  await fs.unlink(`${routes.uploadPath}/randomgame`);
 });
 
-jest.mock("sharp", () => () => ({
-  resize: jest.fn().mockReturnValue({
-    webp: jest.fn().mockReturnValue({
-      toFormat: jest.fn().mockReturnValue({
-        toFile: mockedFile,
-      }),
-    }),
-  }),
-}));
-
-describe("Given an imageResize middleware", () => {
-  describe("When it receives a request with a file", () => {
-    test("Then it should resize the image and call next", async () => {
+describe("Given the imageResize middleware", () => {
+  describe("When it's instantiated with a valid image", () => {
+    test("Then it should call next", async () => {
+      const expectedFilename = "test";
       req.file = file as Express.Multer.File;
 
       await imageResize(req as CustomRequest, null, next);
 
-      expect(next).toHaveBeenCalled();
-      expect(req.file.filename).toContain(`.webp`);
+      expect(req.file.filename).toBe(expectedFilename);
     });
   });
 
-  describe("When it receives a request with an invalid file", () => {
-    test("Then next should be called with an error", async () => {
+  describe("When it's instantiated with an invalid image", () => {
+    test("Then it should call next", async () => {
       jest.clearAllMocks();
       jest.restoreAllMocks();
 
-      mockedFile = jest.fn().mockRejectedValue(new Error());
+      mockToFile = jest.fn().mockRejectedValue(new Error());
 
       await imageResize(req as CustomRequest, null, next);
 
-      const newError = new CustomError(
-        "Couldn't compress the image",
-        500,
-        "Couldn't compress the image"
-      );
-
-      expect(next).toBeCalledWith(newError);
+      expect(next).toBeCalled();
     });
   });
 });

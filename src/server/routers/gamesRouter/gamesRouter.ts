@@ -8,6 +8,7 @@ import {
 } from "../../controllers/gameControllers/gameControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import imageBackup from "../../middlewares/images/imageBackup/imageBackup.js";
+import imageRename from "../../middlewares/images/imageRename/imageRename.js";
 import imageResize from "../../middlewares/images/imageResize/imageResize.js";
 import routes from "../routes.js";
 
@@ -27,6 +28,7 @@ gameRouter.post(
   routes.addGame,
   auth,
   upload.single("image"),
+  imageRename,
   imageResize,
   imageBackup,
   addOneGame
