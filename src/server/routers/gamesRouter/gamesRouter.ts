@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import {
   addOneGame,
+  deleteOneGame,
   getAllGames,
   getOneGame,
 } from "../../controllers/gameControllers/gameControllers.js";
@@ -24,6 +25,7 @@ const upload = multer({
 
 gameRouter.get(routes.listGames, getAllGames);
 gameRouter.get(routes.detailGame, auth, getOneGame);
+gameRouter.delete(routes.delete, auth, deleteOneGame);
 gameRouter.post(
   routes.addGame,
   auth,
