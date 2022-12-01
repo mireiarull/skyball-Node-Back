@@ -55,24 +55,22 @@ export const addOneGame = async (
   const { userId } = req;
   const game = req.body as GameFormData;
 
-  const players = {
-    players: [
-      {
-        userId,
-        rol: "owner",
-        material: {
-          net: game.net,
-          ball: game.ball,
-          rods: game.rods,
-        },
+  const players = [
+    {
+      userId,
+      rol: "owner",
+      material: {
+        net: game.net,
+        ball: game.ball,
+        rods: game.rods,
       },
-    ],
-  };
+    },
+  ];
 
   try {
     const newGame = await Game.create({
       ...game,
-      players: { ...players },
+      players,
       owner: userId,
     });
 
