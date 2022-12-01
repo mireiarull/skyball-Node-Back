@@ -16,9 +16,9 @@ const imageResize = async (
     const fileExtension = path.extname(req.file.filename);
     const fileBaseName = path.basename(req.file.filename, fileExtension);
     const newFileName = `${fileBaseName}`;
-
     await sharp(path.join(routes.uploadPath, filename))
-      .webp({ quality: 90 })
+      .resize()
+      .webp({ quality: 100 })
       .toFormat("webp")
       .toFile(path.join(routes.uploadPath, `${newFileName}.webp`));
 

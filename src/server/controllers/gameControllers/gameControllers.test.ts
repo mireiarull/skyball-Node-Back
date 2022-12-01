@@ -62,14 +62,12 @@ describe("Given a addOneGame controller", () => {
       const expectedResponse = { ...newGame };
 
       req.body = newGame;
-      // Req.userId = game.owner.toString();
 
       Game.create = jest.fn().mockReturnValueOnce({
         ...newGame,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         toJSON: jest.fn().mockReturnValueOnce(newGame),
       });
-      // Game.create = jest.fn().mockResolvedValueOnce(newGame);
 
       await addOneGame(
         req as CustomRequest,
