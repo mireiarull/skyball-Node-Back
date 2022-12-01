@@ -62,14 +62,12 @@ describe("Given a addOneGame controller", () => {
       const expectedResponse = { ...newGame };
 
       req.body = newGame;
-      // Req.userId = game.owner.toString();
 
       Game.create = jest.fn().mockReturnValueOnce({
         ...newGame,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         toJSON: jest.fn().mockReturnValueOnce(newGame),
       });
-      // Game.create = jest.fn().mockResolvedValueOnce(newGame);
 
       await addOneGame(
         req as CustomRequest,
@@ -109,7 +107,6 @@ describe("Given a getOneGame controller", () => {
     test("Then it should invoke its response's method status with 200 and json with the game", async () => {
       const expectedStatus = 200;
 
-      // Game.findById = jest.fn().mockReturnValue(newGame);
       Game.findById = jest.fn().mockReturnValue(newGame);
 
       await getOneGame(

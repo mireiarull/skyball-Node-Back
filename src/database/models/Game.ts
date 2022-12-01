@@ -5,25 +5,30 @@ const gameSchema = new Schema({
   dateTime: {
     type: String,
   },
-  location: { type: { type: String }, coordinates: [Number] },
+  location: {
+    type: { type: String },
+    coordinates: {
+      type: [Number],
+    },
+  },
   beachName: {
-    // Required: true,
+    required: true,
     type: String,
   },
   level: {
-    // Required: true,
+    required: true,
     type: Number,
   },
   gender: {
-    // Required: true,
+    required: true,
     type: String,
   },
   format: {
-    // Required: true,
+    required: true,
     type: Number,
   },
   spots: {
-    // Required: true,
+    required: true,
     type: Number,
   },
   description: {
@@ -56,6 +61,10 @@ const gameSchema = new Schema({
   },
   backupImage: {
     type: String,
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 

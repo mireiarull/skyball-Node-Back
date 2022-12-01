@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import CustomError from "../../../CustomError/CustomError.js";
 import debugCreator from "debug";
-import type { GameStructure } from "../../../database/models/Game.js";
 import Game from "../../../database/models/Game.js";
 import type { CustomRequest } from "../../../types.js";
+import type { GameFormData } from "./types.js";
 
 const debug = debugCreator("skyball: controllers: games");
 
@@ -53,10 +53,37 @@ export const addOneGame = async (
   next: NextFunction
 ) => {
   const { userId } = req;
-  const game = req.body as GameStructure;
+  const game = req.body as GameFormData;
+
+  const newGameForm = {
+    dateTime: game.dateTime,
+    location: {
+      type: game.location.type,
+      coordinates: [game.location.coordinates[0], game.location.coordinates[1]],
+    },
+    beachName: game.beachName,
+    level: game.level,
+    gender: game.gender,
+    format: game.format,
+    spots: game.spots,
+    description: game.description,
+    players: [
+      {
+        userId,
+        rol: "owner",
+        material: {
+          net: game.net,
+          ball: game.ball,
+          rods: game.rods,
+        },
+      },
+    ],
+    image: game.image,
+    owner: userId,
+  };
 
   try {
-    const newGame = await Game.create({ ...game, owner: userId });
+    const newGame = await Game.create(newGameForm);
 
     res.status(201).json({
       ...newGame.toJSON(),
