@@ -91,3 +91,24 @@ export const addOneGame = async (
     next(customError);
   }
 };
+
+export const deleteOneGame = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { gameId } = req.params;
+
+  try {
+    const game = await Game.findByIdAndDelete(gameId);
+
+    res.status(200).json(game);
+  } catch (error: unknown) {
+    const customError = new CustomError(
+      (error as Error).message,
+      404,
+      "Game not found"
+    );
+    next(customError);
+  }
+};
