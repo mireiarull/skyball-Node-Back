@@ -55,14 +55,7 @@ export const addOneGame = async (
   const { userId } = req;
   const game = req.body as GameFormData;
 
-  const newGameForm = {
-    dateTime: game.dateTime,
-    beachName: game.beachName,
-    level: game.level,
-    gender: game.gender,
-    format: game.format,
-    spots: game.spots,
-    description: game.description,
+  const players = {
     players: [
       {
         userId,
@@ -74,12 +67,14 @@ export const addOneGame = async (
         },
       },
     ],
-    image: game.image,
-    owner: userId,
   };
 
   try {
-    const newGame = await Game.create(newGameForm);
+    const newGame = await Game.create({
+      ...game,
+      players: { ...players },
+      owner: userId,
+    });
 
     res.status(201).json({
       ...newGame.toJSON(),
