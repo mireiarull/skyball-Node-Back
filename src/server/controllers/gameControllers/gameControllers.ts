@@ -55,24 +55,22 @@ export const addOneGame = async (
   const { userId } = req;
   const game = req.body as GameFormData;
 
-  const players = {
-    players: [
-      {
-        userId,
-        rol: "owner",
-        material: {
-          net: game.net,
-          ball: game.ball,
-          rods: game.rods,
-        },
+  const players = [
+    {
+      userId,
+      rol: "owner",
+      material: {
+        net: game.net,
+        ball: game.ball,
+        rods: game.rods,
       },
-    ],
-  };
+    },
+  ];
 
   try {
     const newGame = await Game.create({
       ...game,
-      players: { ...players },
+      players,
       owner: userId,
     });
 
@@ -88,6 +86,27 @@ export const addOneGame = async (
       "Error saving game"
     );
 
+    next(customError);
+  }
+};
+
+export const deleteOneGame = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { gameId } = req.params;
+
+  try {
+    const game = await Game.findByIdAndDelete(gameId);
+
+    res.status(200).json(game);
+  } catch (error: unknown) {
+    const customError = new CustomError(
+      (error as Error).message,
+      404,
+      "Game not found"
+    );
     next(customError);
   }
 };

@@ -6,7 +6,12 @@ import {
   getRandomGameList,
 } from "../../../factories/gamesFactory";
 import type { CustomRequest, GamesRequestWithId } from "../../../types";
-import { addOneGame, getAllGames, getOneGame } from "./gameControllers";
+import {
+  addOneGame,
+  deleteOneGame,
+  getAllGames,
+  getOneGame,
+} from "./gameControllers";
 
 const req: Partial<CustomRequest> = {
   userId: "1234",
@@ -149,6 +154,38 @@ describe("Given a getOneGame controller", () => {
       Game.findById = jest.fn().mockRejectedValue(new Error(""));
 
       await getOneGame(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given a deleteOneGame controller", () => {
+  const game = getRandomGame();
+  const req: Partial<CustomRequest> = {
+    params: { gameId: game._id },
+  };
+  describe("When it receives a request with a correct id that exists on the database", () => {
+    test("Then it should call the response method status with a 200", async () => {
+      const expectedStatus = 200;
+
+      Game.findByIdAndDelete = jest.fn().mockReturnValue(game);
+
+      await deleteOneGame(req as CustomRequest, res as Response, () => {});
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatus);
+    });
+  });
+
+  describe("When it receives a request with a id that doesn't exist on the database", () => {
+    test("Then it should call next with status with a 404", async () => {
+      Game.findByIdAndDelete = jest.fn().mockRejectedValueOnce(new Error(""));
+
+      await deleteOneGame(
         req as CustomRequest,
         res as Response,
         next as NextFunction

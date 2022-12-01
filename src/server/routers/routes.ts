@@ -5,6 +5,7 @@ const routes = {
   listGames: "/list",
   addGame: "/add",
   detailGame: "/:gameId",
+  delete: "/delete/:gameId",
 };
 
 export default routes;
