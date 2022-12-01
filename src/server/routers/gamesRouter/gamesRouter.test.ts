@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import "../../../loadEnvironment";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
@@ -6,7 +7,10 @@ import User from "../../../database/models/User";
 import connectDatabase from "../../../database/connectDatabase";
 import app from "../../app";
 import jwt from "jsonwebtoken";
-import { getRandomGameList } from "../../../factories/gamesFactory";
+import {
+  getRandomGame,
+  getRandomGameList,
+} from "../../../factories/gamesFactory";
 import Game from "../../../database/models/Game";
 import environment from "../../../loadEnvironment";
 import { getRandomUser } from "../../../factories/userFactory";
@@ -95,6 +99,41 @@ describe("Given a GET method with /games/id endpoint", () => {
       const response = await request(app)
         .get(`/games/${newGame._id}`)
         .set("Authorization", `Bearer ${requestUserToken}`)
+        .expect(expectedStatus);
+
+      expect(response.body).toHaveProperty("error");
+    });
+  });
+});
+
+describe("Given a DELETE /games/delete/:gameId endpoint", () => {
+  describe("When it receives a request from a logged user and a valid game id", () => {
+    test("Then it should call the response method status with a 200", async () => {
+      const expectedStatus = 200;
+
+      const game = getRandomGame();
+
+      const gameWithOwner = { ...game, owner: user._id };
+
+      const newGame = await Game.create(gameWithOwner);
+
+      await request(app)
+        .delete(`/games/delete/${newGame._id}`)
+        .set("Authorization", `Bearer ${requestUserToken}`)
+        .set("Content-Type", "application/json")
+        .expect(expectedStatus);
+    });
+  });
+
+  describe("When it receives a request from a logged user with an invalid game id '123456'", () => {
+    test("Then it should call the response method status with a 404 and an error", async () => {
+      const expectedStatus = 404;
+      const predictionId = "123456";
+
+      const response = await request(app)
+        .delete(`/games/delete/${predictionId}`)
+        .set("Authorization", `Bearer ${requestUserToken}`)
+        .set("Content-Type", "application/json")
         .expect(expectedStatus);
 
       expect(response.body).toHaveProperty("error");
