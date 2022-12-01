@@ -57,10 +57,6 @@ export const addOneGame = async (
 
   const newGameForm = {
     dateTime: game.dateTime,
-    location: {
-      type: game.location.type,
-      coordinates: [game.location.coordinates[0], game.location.coordinates[1]],
-    },
     beachName: game.beachName,
     level: game.level,
     gender: game.gender,
