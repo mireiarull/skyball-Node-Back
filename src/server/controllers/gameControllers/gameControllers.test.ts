@@ -109,7 +109,6 @@ describe("Given a getOneGame controller", () => {
     test("Then it should invoke its response's method status with 200 and json with the game", async () => {
       const expectedStatus = 200;
 
-      // Game.findById = jest.fn().mockReturnValue(newGame);
       Game.findById = jest.fn().mockReturnValue(newGame);
 
       await getOneGame(
