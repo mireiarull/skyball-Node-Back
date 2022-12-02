@@ -36,6 +36,14 @@ gameRouter.post(
   imageBackup,
   addOneGame
 );
-gameRouter.patch(routes.update, auth, updateOneGame);
+gameRouter.patch(
+  routes.update,
+  auth,
+  upload.single("image"),
+  imageRename,
+  imageResize,
+  imageBackup,
+  updateOneGame
+);
 
 export default gameRouter;
