@@ -6,6 +6,7 @@ import {
   deleteOneGame,
   getAllGames,
   getOneGame,
+  updateOneGame,
 } from "../../controllers/gameControllers/gameControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import imageBackup from "../../middlewares/images/imageBackup/imageBackup.js";

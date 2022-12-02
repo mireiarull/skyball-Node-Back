@@ -169,7 +169,7 @@ export const updateOneGame = async (
       }
     );
 
-    res.status(201).json(newGameToUpdate);
+    res.status(200).json(newGameToUpdate);
   } catch (error: unknown) {
     debug((error as Error).message);
     const customError = new CustomError(

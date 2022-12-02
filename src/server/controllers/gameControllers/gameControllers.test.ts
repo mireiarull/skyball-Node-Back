@@ -11,6 +11,7 @@ import {
   deleteOneGame,
   getAllGames,
   getOneGame,
+  updateOneGame,
 } from "./gameControllers";
 
 const req: Partial<CustomRequest> = {
@@ -220,6 +221,79 @@ describe("Given a deleteOneGame controller", () => {
       Game.findByIdAndDelete = jest.fn().mockRejectedValueOnce(new Error(""));
 
       await deleteOneGame(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given an updateOneGame controller", () => {
+  const game = getRandomGame();
+  const params = {
+    id: game._id,
+  };
+
+  describe("When it receives a request with a correct id that exists on the database and the user id matches", () => {
+    test("Then it should call the response method status with a 200", async () => {
+      const expectedStatus = 200;
+      req.params = params;
+      req.userId = game.owner.toString();
+
+      req.body = game;
+
+      Game.findById = jest.fn().mockReturnValue(game);
+
+      Game.findByIdAndUpdate = jest.fn().mockReturnValue(game);
+
+      await updateOneGame(req as CustomRequest, res as Response, () => {});
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatus);
+    });
+  });
+
+  describe("When it receives a request with a correct id and the user id doesnt't match", () => {
+    test("Then it should call the response method status with a 500", async () => {
+      req.params = params;
+      req.userId = "";
+
+      req.body = game;
+
+      const customError = new CustomError(
+        "User not allowed to edit",
+        500,
+        "User not allowed to edit"
+      );
+
+      Game.findById = jest.fn().mockReturnValue(game);
+
+      Game.findByIdAndUpdate = jest.fn().mockReturnValue(game);
+
+      await updateOneGame(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      expect(next).toHaveBeenCalledWith(customError);
+    });
+  });
+
+  describe("When it receives a request with a game id that doesn't exist on the database", () => {
+    test("Then it should call next with status with a 404", async () => {
+      req.params = params;
+      req.userId = game.owner.toString();
+
+      req.body = game;
+
+      Game.findById = jest.fn().mockReturnValue(game);
+
+      Game.findByIdAndUpdate = jest.fn().mockRejectedValueOnce(new Error(""));
+
+      await updateOneGame(
         req as CustomRequest,
         res as Response,
         next as NextFunction
