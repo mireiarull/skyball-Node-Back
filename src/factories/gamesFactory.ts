@@ -29,6 +29,7 @@ const gamesFactory = Factory.define<GameStructureWithId>(() => ({
   image: faker.random.alphaNumeric(),
   backupImage: faker.random.alphaNumeric(),
   _id: new mongoose.Types.ObjectId().toString(),
+  owner: new mongoose.Types.ObjectId(),
 }));
 
 export const getRandomGame = () => gamesFactory.build();

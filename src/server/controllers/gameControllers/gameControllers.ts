@@ -91,15 +91,27 @@ export const addOneGame = async (
 };
 
 export const deleteOneGame = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
   const { gameId } = req.params;
+  const { userId } = req;
 
   try {
-    const game = await Game.findByIdAndDelete(gameId);
+    const gameData = await Game.findById(gameId);
 
+    if (gameData.owner.toString() !== userId) {
+      const customError = new CustomError(
+        "User not allowed",
+        500,
+        "User not allowed"
+      );
+      next(customError);
+      return;
+    }
+
+    const game = await Game.findByIdAndDelete(gameId);
     res.status(200).json(game);
   } catch (error: unknown) {
     const customError = new CustomError(
