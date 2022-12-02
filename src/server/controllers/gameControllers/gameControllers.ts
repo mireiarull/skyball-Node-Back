@@ -91,15 +91,27 @@ export const addOneGame = async (
 };
 
 export const deleteOneGame = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
   const { gameId } = req.params;
+  const { userId } = req;
 
   try {
-    const game = await Game.findByIdAndDelete(gameId);
+    const gameData = await Game.findById(gameId);
 
+    if (gameData.owner.toString() !== userId) {
+      const customError = new CustomError(
+        "User not allowed",
+        500,
+        "User not allowed"
+      );
+      next(customError);
+      return;
+    }
+
+    const game = await Game.findByIdAndDelete(gameId);
     res.status(200).json(game);
   } catch (error: unknown) {
     const customError = new CustomError(
@@ -107,6 +119,65 @@ export const deleteOneGame = async (
       404,
       "Game not found"
     );
+    next(customError);
+  }
+};
+
+export const updateOneGame = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req;
+  const { gameId } = req.params;
+  const gameToUpdate = req.body as GameFormData;
+
+  const players = [
+    {
+      userId,
+      rol: "owner",
+      material: {
+        net: gameToUpdate.net,
+        ball: gameToUpdate.ball,
+        rods: gameToUpdate.rods,
+      },
+    },
+  ];
+
+  try {
+    const gameData = await Game.findById(gameId);
+
+    if (gameData.owner.toString() !== userId) {
+      const customError = new CustomError(
+        "User not allowed to edit",
+        500,
+        "User not allowed to edit"
+      );
+      next(customError);
+      return;
+    }
+
+    const newGameToUpdate = await Game.findByIdAndUpdate(
+      gameId,
+      {
+        ...gameToUpdate,
+        players,
+        owner: userId,
+      },
+      {
+        returnDocument: "after",
+      }
+    );
+
+    res.status(200).json(newGameToUpdate);
+  } catch (error: unknown) {
+    debug((error as Error).message);
+    const customError = new CustomError(
+      (error as Error).message,
+      404,
+      "Game not found"
+    );
+
     next(customError);
   }
 };

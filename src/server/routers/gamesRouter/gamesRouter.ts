@@ -6,6 +6,7 @@ import {
   deleteOneGame,
   getAllGames,
   getOneGame,
+  updateOneGame,
 } from "../../controllers/gameControllers/gameControllers.js";
 import auth from "../../middlewares/auth/auth.js";
 import imageBackup from "../../middlewares/images/imageBackup/imageBackup.js";
@@ -34,6 +35,15 @@ gameRouter.post(
   imageResize,
   imageBackup,
   addOneGame
+);
+gameRouter.patch(
+  routes.update,
+  auth,
+  upload.single("image"),
+  imageRename,
+  imageResize,
+  imageBackup,
+  updateOneGame
 );
 
 export default gameRouter;
