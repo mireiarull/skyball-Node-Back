@@ -35,5 +35,6 @@ gameRouter.post(
   imageBackup,
   addOneGame
 );
+gameRouter.patch(routes.update, auth, updateOneGame);
 
 export default gameRouter;
