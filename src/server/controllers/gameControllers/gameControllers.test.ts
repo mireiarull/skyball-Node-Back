@@ -80,6 +80,26 @@ describe("Given a getAllGames controller", () => {
       expect(next).toHaveBeenCalled();
     });
   });
+
+  describe("When it receives a request and there are no available games", () => {
+    test("Then next should be invoked with an error", async () => {
+      Game.countDocuments = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockReturnValue(0) });
+
+      Game.find = jest.fn().mockReturnValue({
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            exec: jest.fn().mockReturnValue([]),
+          }),
+        }),
+      });
+
+      await getAllGames(req as Request, res as Response, next as NextFunction);
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
 });
 
 describe("Given a addOneGame controller", () => {
