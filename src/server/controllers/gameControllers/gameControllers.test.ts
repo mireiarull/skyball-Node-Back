@@ -17,6 +17,7 @@ import {
 const req: Partial<CustomRequest> = {
   userId: "1234",
   params: {},
+  query: { page: "0" },
 };
 
 const res: Partial<Response> = {
@@ -38,24 +39,45 @@ describe("Given a getAllGames controller", () => {
     test("Then it should invoke its response's method status with 200 and json with a list of games", async () => {
       const expectedStatus = 200;
 
-      Game.find = jest.fn().mockResolvedValueOnce(gameList);
+      Game.countDocuments = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockReturnValue(5) });
+
+      Game.find = jest.fn().mockReturnValue({
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            exec: jest.fn().mockReturnValue(gameList),
+          }),
+        }),
+      });
 
       await getAllGames(req as Request, res as Response, next as NextFunction);
 
       expect(res.status).toHaveBeenCalledWith(expectedStatus);
-      expect(res.json).toHaveBeenCalledWith({ games: gameList });
+      expect(res.json).toBeCalledWith({
+        games: {
+          isNextPage: true,
+          isPreviousPage: false,
+          games: gameList,
+          totalPages: 1,
+        },
+      });
     });
   });
 
   describe("When it receives a request and Game.find rejects", () => {
     test("Then next should be invoked with an error", async () => {
-      const error = new Error();
-
-      Game.find = jest.fn().mockRejectedValue(error);
+      Game.find = jest.fn().mockReturnValue({
+        skip: jest.fn().mockReturnValue({
+          limit: jest.fn().mockReturnValue({
+            exec: jest.fn().mockReturnValue(null),
+          }),
+        }),
+      });
 
       await getAllGames(req as Request, res as Response, next as NextFunction);
 
-      expect(next).toHaveBeenCalledWith(error);
+      expect(next).toHaveBeenCalled();
     });
   });
 });

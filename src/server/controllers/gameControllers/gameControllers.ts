@@ -37,6 +37,8 @@ export const getAllGames = async (
     if (games.length === 0) {
       next(new CustomError("No available games", 404, "Games not found"));
     }
+
+    res.status(200).json({ games: { ...checkPages, games } });
   } catch (error: unknown) {
     const customError = new CustomError(
       (error as Error).message,
@@ -44,10 +46,7 @@ export const getAllGames = async (
       "Database error"
     );
     next(customError);
-    return;
   }
-
-  res.status(200).json({ games: { ...checkPages, games } });
 };
 
 export const getOneGame = async (
