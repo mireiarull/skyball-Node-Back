@@ -53,7 +53,7 @@ describe("Given a GET method with /games/list endpoint", () => {
         .expect(expectedStatus);
 
       expect(response.body).toHaveProperty("games");
-      expect(response.body.games).toHaveLength(3);
+      expect(response.body.games.games).toHaveLength(3);
     });
   });
 });
