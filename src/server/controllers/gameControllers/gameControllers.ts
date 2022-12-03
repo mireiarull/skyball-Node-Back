@@ -1,3 +1,4 @@
+/* eslint-disable no-implicit-coercion */
 import type { NextFunction, Request, Response } from "express";
 import CustomError from "../../../CustomError/CustomError.js";
 import debugCreator from "debug";
@@ -12,10 +13,30 @@ export const getAllGames = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const games = await Game.find();
+  let games;
 
-    res.status(200).json({ games });
+  const pageOptions = {
+    page: +req.query.page || 0,
+    limit: 5,
+  };
+
+  const countGames: number = await Game.countDocuments().exec();
+
+  const checkPages = {
+    isPreviousPage: pageOptions.page !== 0,
+    isNextPage: countGames >= pageOptions.limit * (pageOptions.page + 1),
+    totalPages: Math.ceil(countGames / pageOptions.limit),
+  };
+
+  try {
+    games = await Game.find()
+      .skip(pageOptions.page * pageOptions.limit)
+      .limit(pageOptions.limit)
+      .exec();
+
+    if (games.length === 0) {
+      next(new CustomError("No available games", 404, "Games not found"));
+    }
   } catch (error: unknown) {
     const customError = new CustomError(
       (error as Error).message,
@@ -23,7 +44,10 @@ export const getAllGames = async (
       "Database error"
     );
     next(customError);
+    return;
   }
+
+  res.status(200).json({ games: { ...checkPages, games } });
 };
 
 export const getOneGame = async (
