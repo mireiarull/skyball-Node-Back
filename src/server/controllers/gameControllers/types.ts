@@ -21,7 +21,3 @@ export interface GameFormData {
   rods: boolean;
   image: unknown;
 }
-
-export interface GameFilter {
-  date: string;
-}

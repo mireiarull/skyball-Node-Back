@@ -4,7 +4,7 @@ import CustomError from "../../../CustomError/CustomError.js";
 import debugCreator from "debug";
 import Game from "../../../database/models/Game.js";
 import type { CustomRequest } from "../../../types.js";
-import type { GameFilter, GameFormData } from "./types.js";
+import type { GameFormData } from "./types.js";
 import { DateTime } from "luxon";
 
 const debug = debugCreator("skyball: controllers: games");
@@ -211,14 +211,16 @@ export const getGamesByDate = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { date } = req.body as GameFilter;
+  const filterOptions = {
+    date: req.query.date as string,
+  };
 
-  let startTime = DateTime.fromISO(date).startOf("day");
+  let startTime = DateTime.fromISO(filterOptions.date).startOf("day");
   if (startTime === DateTime.now().startOf("day")) {
     startTime = DateTime.now();
   }
 
-  const endTime = DateTime.fromISO(date).endOf("day");
+  const endTime = DateTime.fromISO(filterOptions.date).endOf("day");
 
   try {
     const filteredGames = await Game.find({

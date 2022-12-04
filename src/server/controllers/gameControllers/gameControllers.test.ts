@@ -15,7 +15,6 @@ import {
   getOneGame,
   updateOneGame,
 } from "./gameControllers";
-import type { GameFilter } from "./types";
 
 const req: Partial<CustomRequest> = {
   userId: "1234",
@@ -357,13 +356,9 @@ describe("Given a getGamesByDate controller", () => {
     test("Then it should call the response method status with a 200 and the matching game", async () => {
       const expectedStatus = 200;
 
-      const filterBody: GameFilter = {
-        date: games[2].dateTime,
-      };
+      req.params.date = games[2].dateTime;
 
       const expectedGame = games[2];
-
-      req.body = filterBody;
 
       Game.find = jest.fn().mockReturnValue({
         sort: jest.fn().mockReturnValue(games[2]),
@@ -387,13 +382,9 @@ describe("Given a getGamesByDate controller", () => {
 
       const expectedStatus = 200;
 
-      const filterBody: GameFilter = {
-        date: games[2].dateTime,
-      };
-
       const expectedGame = games[2];
 
-      req.body = filterBody;
+      req.params.date = games[2].dateTime;
 
       Game.find = jest.fn().mockReturnValue({
         sort: jest.fn().mockReturnValue(games[2]),
@@ -412,11 +403,7 @@ describe("Given a getGamesByDate controller", () => {
 
   describe("When it receives a request with a date in its body that doesn't match any game from the database", () => {
     test("Then it should call next with status with a 404", async () => {
-      const filterBody: GameFilter = {
-        date: games[0].dateTime,
-      };
-
-      req.body = filterBody;
+      req.params.date = games[0].dateTime;
 
       Game.find = jest.fn().mockReturnValue({
         sort: jest.fn().mockReturnValue([]),
@@ -440,11 +427,7 @@ describe("Given a getGamesByDate controller", () => {
 
   describe("When it receives a request and the database rejects", () => {
     test("Then it should call next with status with a 500", async () => {
-      const filterBody: GameFilter = {
-        date: "",
-      };
-
-      req.body = filterBody;
+      req.params.date = games[2].dateTime;
 
       Game.find = jest.fn().mockReturnValue({
         sort: jest.fn().mockRejectedValueOnce(new Error("")),
