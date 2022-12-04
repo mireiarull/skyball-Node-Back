@@ -4,7 +4,8 @@ import CustomError from "../../../CustomError/CustomError.js";
 import debugCreator from "debug";
 import Game from "../../../database/models/Game.js";
 import type { CustomRequest } from "../../../types.js";
-import type { GameFormData } from "./types.js";
+import type { GameFilter, GameFormData } from "./types.js";
+import { DateTime } from "luxon";
 
 const debug = debugCreator("skyball: controllers: games");
 
@@ -95,6 +96,7 @@ export const addOneGame = async (
       ...game,
       players,
       owner: userId,
+      dateTime: new Date(game.dateTime),
     });
 
     res.status(201).json({
@@ -199,6 +201,41 @@ export const updateOneGame = async (
       (error as Error).message,
       404,
       "Game not found"
+    );
+
+    next(customError);
+  }
+};
+
+export const getGamesByDate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { date } = req.body as GameFilter;
+
+  let startTime = DateTime.fromISO(date).startOf("day");
+  if (startTime === DateTime.now().startOf("day")) {
+    startTime = DateTime.now();
+  }
+
+  const endTime = DateTime.fromISO(date).endOf("day");
+
+  try {
+    const filteredGames = await Game.find({
+      dateTime: {
+        $gte: startTime.toJSDate(),
+        $lt: endTime.toJSDate(),
+      },
+    }).sort({ dateTime: "asc" });
+
+    res.status(200).json({ filteredGames });
+  } catch (error: unknown) {
+    debug((error as Error).message);
+    const customError = new CustomError(
+      (error as Error).message,
+      500,
+      "Error filtering games"
     );
 
     next(customError);
