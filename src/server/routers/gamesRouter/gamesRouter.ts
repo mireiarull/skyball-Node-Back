@@ -5,6 +5,7 @@ import {
   addOneGame,
   deleteOneGame,
   getAllGames,
+  getGamesByDate,
   getOneGame,
   updateOneGame,
 } from "../../controllers/gameControllers/gameControllers.js";
@@ -23,8 +24,8 @@ const upload = multer({
     fileSize: 8000000,
   },
 });
-
 gameRouter.get(routes.listGames, getAllGames);
+gameRouter.get(routes.filter, getGamesByDate);
 gameRouter.get(routes.detailGame, auth, getOneGame);
 gameRouter.delete(routes.delete, auth, deleteOneGame);
 gameRouter.post(
