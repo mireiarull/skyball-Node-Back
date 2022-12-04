@@ -1,3 +1,4 @@
+import { DateTime, Settings } from "luxon";
 import type { NextFunction, Request, Response } from "express";
 import CustomError from "../../../CustomError/CustomError";
 import Game from "../../../database/models/Game";
@@ -354,6 +355,36 @@ describe("Given a getGamesByDate controller", () => {
 
   describe("When it receives a request with a date in its body that matches one game from the database", () => {
     test("Then it should call the response method status with a 200 and the matching game", async () => {
+      const expectedStatus = 200;
+
+      const filterBody: GameFilter = {
+        date: games[2].dateTime,
+      };
+
+      const expectedGame = games[2];
+
+      req.body = filterBody;
+
+      Game.find = jest.fn().mockReturnValue({
+        sort: jest.fn().mockReturnValue(games[2]),
+      });
+
+      await getGamesByDate(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatus);
+      expect(res.json).toHaveBeenCalledWith({ filteredGames: expectedGame });
+    });
+  });
+
+  describe("When it receives a request with a date in its body that matches today", () => {
+    test("Then it should call the response method status with a 200 and the matching game", async () => {
+      const expectedNow = DateTime.local(2022, 12, 20);
+      Settings.now = () => expectedNow.toMillis();
+
       const expectedStatus = 200;
 
       const filterBody: GameFilter = {
