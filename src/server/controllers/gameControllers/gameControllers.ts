@@ -228,11 +228,22 @@ export const getGamesByDate = async (
       },
     }).sort({ dateTime: "asc" });
 
+    if (filteredGames.length === 0) {
+      next(
+        new CustomError(
+          "0 games matching the filter",
+          404,
+          "0 games matching the filter"
+        )
+      );
+      return;
+    }
+
     res.status(200).json({ filteredGames });
   } catch (error: unknown) {
     debug((error as Error).message);
     const customError = new CustomError(
-      (error as Error).message,
+      "Error filtering games",
       500,
       "Error filtering games"
     );

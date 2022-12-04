@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import CustomError from "../../../CustomError/CustomError";
-import Game, { GameStructure } from "../../../database/models/Game";
+import Game from "../../../database/models/Game";
 import {
   getRandomGame,
   getRandomGameList,
@@ -14,7 +14,7 @@ import {
   getOneGame,
   updateOneGame,
 } from "./gameControllers";
-import type { GameFilter, GameStructureWithId } from "./types";
+import type { GameFilter } from "./types";
 
 const req: Partial<CustomRequest> = {
   userId: "1234",
@@ -353,7 +353,7 @@ describe("Given a getGamesByDate controller", () => {
   const games = [...getRandomGameList(2), randomGameWithTime];
 
   describe("When it receives a request with a date in its body that matches one game from the database", () => {
-    test.only("Then it should call the response method status with a 200 and the matching game", async () => {
+    test("Then it should call the response method status with a 200 and the matching game", async () => {
       const expectedStatus = 200;
 
       const filterBody: GameFilter = {
@@ -368,8 +368,6 @@ describe("Given a getGamesByDate controller", () => {
         sort: jest.fn().mockReturnValue(games[2]),
       });
 
-      // Game.find = jest.fn().mockReturnValue(games[2]);
-
       await getGamesByDate(
         req as CustomRequest,
         res as Response,
@@ -381,24 +379,59 @@ describe("Given a getGamesByDate controller", () => {
     });
   });
 
-  // Describe("When it receives a request with a game id that doesn't exist on the database", () => {
-  //   test("Then it should call next with status with a 404", async () => {
-  //     req.params = params;
-  //     req.userId = game.owner.toString();
+  describe("When it receives a request with a date in its body that doesn't match any game from the database", () => {
+    test("Then it should call next with status with a 404", async () => {
+      const filterBody: GameFilter = {
+        date: games[0].dateTime,
+      };
 
-  //     req.body = game;
+      req.body = filterBody;
 
-  //     Game.findById = jest.fn().mockReturnValue(game);
+      Game.find = jest.fn().mockReturnValue({
+        sort: jest.fn().mockReturnValue([]),
+      });
 
-  //     Game.findByIdAndUpdate = jest.fn().mockRejectedValueOnce(new Error(""));
+      await getGamesByDate(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
 
-  //     await updateOneGame(
-  //       req as CustomRequest,
-  //       res as Response,
-  //       next as NextFunction
-  //     );
+      const error = new CustomError(
+        "0 games matching the filter",
+        404,
+        "0 games matching the filter"
+      );
 
-  //     expect(next).toHaveBeenCalled();
-  //   });
-  // });
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe("When it receives a request and the database rejects", () => {
+    test("Then it should call next with status with a 500", async () => {
+      const filterBody: GameFilter = {
+        date: "",
+      };
+
+      req.body = filterBody;
+
+      Game.find = jest.fn().mockReturnValue({
+        sort: jest.fn().mockRejectedValueOnce(new Error("")),
+      });
+
+      await getGamesByDate(
+        req as CustomRequest,
+        res as Response,
+        next as NextFunction
+      );
+
+      const customError = new CustomError(
+        "Error filtering games",
+        500,
+        "Error filtering games"
+      );
+
+      expect(next).toHaveBeenCalledWith(customError);
+    });
+  });
 });
