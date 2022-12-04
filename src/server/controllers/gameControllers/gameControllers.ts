@@ -96,7 +96,6 @@ export const addOneGame = async (
       ...game,
       players,
       owner: userId,
-      dateTime: new Date(game.dateTime),
     });
 
     res.status(201).json({
@@ -208,7 +207,7 @@ export const updateOneGame = async (
 };
 
 export const getGamesByDate = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -224,16 +223,27 @@ export const getGamesByDate = async (
   try {
     const filteredGames = await Game.find({
       dateTime: {
-        $gte: startTime.toJSDate(),
+        $gte: startTime,
         $lt: endTime.toJSDate(),
       },
     }).sort({ dateTime: "asc" });
+
+    if (filteredGames.length === 0) {
+      next(
+        new CustomError(
+          "0 games matching the filter",
+          404,
+          "0 games matching the filter"
+        )
+      );
+      return;
+    }
 
     res.status(200).json({ filteredGames });
   } catch (error: unknown) {
     debug((error as Error).message);
     const customError = new CustomError(
-      (error as Error).message,
+      "Error filtering games",
       500,
       "Error filtering games"
     );

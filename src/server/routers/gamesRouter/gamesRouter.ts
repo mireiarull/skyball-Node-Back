@@ -28,6 +28,7 @@ gameRouter.get(routes.listGames, getAllGames);
 gameRouter.get(routes.filter, getGamesByDate);
 gameRouter.get(routes.detailGame, auth, getOneGame);
 gameRouter.delete(routes.delete, auth, deleteOneGame);
+gameRouter.delete(routes.filter, auth, getGamesByDate);
 gameRouter.post(
   routes.addGame,
   auth,
