@@ -1,5 +1,5 @@
-import { DateTime, Settings } from "luxon";
 import type { NextFunction, Request, Response } from "express";
+import { DateTime } from "luxon";
 import CustomError from "../../../CustomError/CustomError";
 import Game from "../../../database/models/Game";
 import {
@@ -11,7 +11,6 @@ import {
   addOneGame,
   deleteOneGame,
   getAllGames,
-  getGamesByDate,
   getOneGame,
   updateOneGame,
 } from "./gameControllers";
@@ -37,7 +36,7 @@ const gameList = getRandomGameList(2);
 const game = getRandomGame();
 
 describe("Given a getAllGames controller", () => {
-  describe("When it receives a request", () => {
+  describe("When it receives a request without a filter date in its params", () => {
     test("Then it should invoke its response's method status with 200 and json with a list of games", async () => {
       const expectedStatus = 200;
 
@@ -67,7 +66,7 @@ describe("Given a getAllGames controller", () => {
     });
   });
 
-  describe("When it receives a request and Game.find rejects", () => {
+  describe("When it receives a request without a filter date in its params and Game.find rejects", () => {
     test("Then next should be invoked with an error", async () => {
       Game.find = jest.fn().mockReturnValue({
         skip: jest.fn().mockReturnValue({
@@ -83,7 +82,7 @@ describe("Given a getAllGames controller", () => {
     });
   });
 
-  describe("When it receives a request and there are no available games", () => {
+  describe("When it receives a request without a filter date in its params and there are no available games", () => {
     test("Then next should be invoked with an error", async () => {
       Game.countDocuments = jest
         .fn()
@@ -100,6 +99,150 @@ describe("Given a getAllGames controller", () => {
       await getAllGames(req as Request, res as Response, next as NextFunction);
 
       expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe("When it receives a request with a filter date in its params ", () => {
+    describe("And the date filter matches one game from the database", () => {
+      const randomGameWithTime = { ...getRandomGame, dateTime: "2022-12-20" };
+      const games = [...getRandomGameList(2), randomGameWithTime];
+
+      const req: Partial<CustomRequest> = {
+        userId: "1234",
+        params: {},
+        query: { page: "0", date: "2022-12-20" },
+      };
+      test("Then it should call the response method status with a 200 and the matching game", async () => {
+        const expectedStatus = 200;
+
+        req.params.date = games[2].dateTime;
+
+        const expectedGame = games[2];
+
+        Game.countDocuments = jest
+          .fn()
+          .mockReturnValue({ exec: jest.fn().mockReturnValue(3) });
+
+        Game.find = jest.fn().mockReturnValue({
+          sort: jest.fn().mockReturnValue({
+            skip: jest.fn().mockReturnValue({
+              limit: jest.fn().mockReturnValue({
+                exec: jest.fn().mockReturnValue(expectedGame),
+              }),
+            }),
+          }),
+        });
+
+        await getAllGames(
+          req as CustomRequest,
+          res as Response,
+          next as NextFunction
+        );
+
+        expect(res.status).toHaveBeenCalledWith(expectedStatus);
+        expect(res.json).toBeCalledWith({
+          games: {
+            isNextPage: false,
+            isPreviousPage: false,
+            games: expectedGame,
+            totalPages: NaN,
+          },
+        });
+      });
+    });
+
+    describe("And the date filter matches one game from the database from today", () => {
+      const today = DateTime.now().toString().slice(0, 10);
+      const randomGameWithTime = {
+        ...getRandomGame,
+        dateTime: today,
+      };
+      const games = [...getRandomGameList(2), randomGameWithTime];
+
+      const req: Partial<CustomRequest> = {
+        userId: "1234",
+        params: {},
+        query: { page: "0", date: today },
+      };
+      test("Then it should call the response method status with a 200 and the matching game", async () => {
+        const expectedStatus = 200;
+
+        req.params.date = games[2].dateTime;
+
+        const expectedGame = games[2];
+
+        Game.countDocuments = jest
+          .fn()
+          .mockReturnValue({ exec: jest.fn().mockReturnValue(3) });
+
+        Game.find = jest.fn().mockReturnValue({
+          sort: jest.fn().mockReturnValue({
+            skip: jest.fn().mockReturnValue({
+              limit: jest.fn().mockReturnValue({
+                exec: jest.fn().mockReturnValue(expectedGame),
+              }),
+            }),
+          }),
+        });
+
+        await getAllGames(
+          req as CustomRequest,
+          res as Response,
+          next as NextFunction
+        );
+
+        expect(res.status).toHaveBeenCalledWith(expectedStatus);
+        expect(res.json).toBeCalledWith({
+          games: {
+            isNextPage: false,
+            isPreviousPage: false,
+            games: expectedGame,
+            totalPages: NaN,
+          },
+        });
+      });
+    });
+
+    describe("And the date filter doesn't matches any game from the database", () => {
+      const randomGameWithTime = { ...getRandomGame, dateTime: "2022-12-20" };
+      const games = [...getRandomGameList(2), randomGameWithTime];
+
+      const req: Partial<CustomRequest> = {
+        userId: "1234",
+        params: {},
+        query: { page: "0", date: "2022-12-20" },
+      };
+      test("Then it should call the response method status with a 200 and the matching game", async () => {
+        req.params.date = games[2].dateTime;
+
+        Game.countDocuments = jest
+          .fn()
+          .mockReturnValue({ exec: jest.fn().mockReturnValue(3) });
+
+        Game.find = jest.fn().mockReturnValue({
+          sort: jest.fn().mockReturnValue({
+            skip: jest.fn().mockReturnValue({
+              limit: jest.fn().mockReturnValue({
+                exec: jest.fn().mockReturnValue([]),
+              }),
+            }),
+          }),
+        });
+
+        await getAllGames(
+          req as CustomRequest,
+          res as Response,
+          next as NextFunction
+        );
+
+        const error = new CustomError(
+          "0 games matching the filter",
+          404,
+          "0 games matching the filter"
+        );
+
+        expect(next).toHaveBeenCalledWith(error);
+      });
     });
   });
 });
@@ -344,108 +487,6 @@ describe("Given an updateOneGame controller", () => {
       );
 
       expect(next).toHaveBeenCalled();
-    });
-  });
-});
-
-describe("Given a getGamesByDate controller", () => {
-  const randomGameWithTime = { ...getRandomGame, dateTime: "2022-12-20" };
-  const games = [...getRandomGameList(2), randomGameWithTime];
-
-  describe("When it receives a request with a date in its body that matches one game from the database", () => {
-    test("Then it should call the response method status with a 200 and the matching game", async () => {
-      const expectedStatus = 200;
-
-      req.params.date = games[2].dateTime;
-
-      const expectedGame = games[2];
-
-      Game.find = jest.fn().mockReturnValue({
-        sort: jest.fn().mockReturnValue(games[2]),
-      });
-
-      await getGamesByDate(
-        req as CustomRequest,
-        res as Response,
-        next as NextFunction
-      );
-
-      expect(res.status).toHaveBeenCalledWith(expectedStatus);
-      expect(res.json).toHaveBeenCalledWith({ filteredGames: expectedGame });
-    });
-  });
-
-  describe("When it receives a request with a date in its body that matches today", () => {
-    test("Then it should call the response method status with a 200 and the matching game", async () => {
-      const expectedNow = DateTime.local(2022, 12, 20);
-      Settings.now = () => expectedNow.toMillis();
-
-      const expectedStatus = 200;
-
-      const expectedGame = games[2];
-
-      req.params.date = games[2].dateTime;
-
-      Game.find = jest.fn().mockReturnValue({
-        sort: jest.fn().mockReturnValue(games[2]),
-      });
-
-      await getGamesByDate(
-        req as CustomRequest,
-        res as Response,
-        next as NextFunction
-      );
-
-      expect(res.status).toHaveBeenCalledWith(expectedStatus);
-      expect(res.json).toHaveBeenCalledWith({ filteredGames: expectedGame });
-    });
-  });
-
-  describe("When it receives a request with a date in its body that doesn't match any game from the database", () => {
-    test("Then it should call next with status with a 404", async () => {
-      req.params.date = games[0].dateTime;
-
-      Game.find = jest.fn().mockReturnValue({
-        sort: jest.fn().mockReturnValue([]),
-      });
-
-      await getGamesByDate(
-        req as CustomRequest,
-        res as Response,
-        next as NextFunction
-      );
-
-      const error = new CustomError(
-        "0 games matching the filter",
-        404,
-        "0 games matching the filter"
-      );
-
-      expect(next).toHaveBeenCalledWith(error);
-    });
-  });
-
-  describe("When it receives a request and the database rejects", () => {
-    test("Then it should call next with status with a 500", async () => {
-      req.params.date = games[2].dateTime;
-
-      Game.find = jest.fn().mockReturnValue({
-        sort: jest.fn().mockRejectedValueOnce(new Error("")),
-      });
-
-      await getGamesByDate(
-        req as CustomRequest,
-        res as Response,
-        next as NextFunction
-      );
-
-      const customError = new CustomError(
-        "Error filtering games",
-        500,
-        "Error filtering games"
-      );
-
-      expect(next).toHaveBeenCalledWith(customError);
     });
   });
 });

@@ -15,29 +15,63 @@ export const getAllGames = async (
   next: NextFunction
 ) => {
   let games;
+  let countGames: number;
 
   const pageOptions = {
     page: +req.query.page || 0,
     limit: 5,
+    date: req.query.date as string,
   };
-
-  const countGames: number = await Game.countDocuments().exec();
-
-  const checkPages = {
-    isPreviousPage: pageOptions.page !== 0,
-    isNextPage: countGames >= pageOptions.limit * (pageOptions.page + 1),
-    totalPages: Math.ceil(countGames / pageOptions.limit),
-  };
-
   try {
-    games = await Game.find()
-      .skip(pageOptions.page * pageOptions.limit)
-      .limit(pageOptions.limit)
-      .exec();
+    if (pageOptions.date) {
+      let startTime = DateTime.fromISO(pageOptions.date).startOf("day");
+      const today = DateTime.now().startOf("day");
+      if (startTime.toString() === today.toString()) {
+        startTime = DateTime.now();
+      }
 
-    if (games.length === 0) {
-      next(new CustomError("No available games", 404, "Games not found"));
+      const endTime = DateTime.fromISO(pageOptions.date).endOf("day");
+
+      games = await Game.find({
+        dateTime: {
+          $gte: startTime,
+          $lt: endTime,
+        },
+      })
+        .sort({ dateTime: "asc" })
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .exec();
+
+      countGames = games.length;
+
+      if (games.length === 0) {
+        next(
+          new CustomError(
+            "0 games matching the filter",
+            404,
+            "0 games matching the filter"
+          )
+        );
+        return;
+      }
+    } else {
+      countGames = await Game.countDocuments().exec();
+      games = await Game.find()
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit)
+        .exec();
+
+      if (games.length === 0) {
+        next(new CustomError("No available games", 404, "Games not found"));
+      }
     }
+
+    const checkPages = {
+      isPreviousPage: pageOptions.page !== 0,
+      isNextPage: countGames >= pageOptions.limit * (pageOptions.page + 1),
+      totalPages: Math.ceil(countGames / pageOptions.limit),
+    };
 
     res.status(200).json({ games: { ...checkPages, games } });
   } catch (error: unknown) {
@@ -200,54 +234,6 @@ export const updateOneGame = async (
       (error as Error).message,
       404,
       "Game not found"
-    );
-
-    next(customError);
-  }
-};
-
-export const getGamesByDate = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const filterOptions = {
-    date: req.query.date as string,
-  };
-
-  let startTime = DateTime.fromISO(filterOptions.date).startOf("day");
-  if (startTime === DateTime.now().startOf("day")) {
-    startTime = DateTime.now();
-  }
-
-  const endTime = DateTime.fromISO(filterOptions.date).endOf("day");
-
-  try {
-    const filteredGames = await Game.find({
-      dateTime: {
-        $gte: startTime,
-        $lt: endTime.toJSDate(),
-      },
-    }).sort({ dateTime: "asc" });
-
-    if (filteredGames.length === 0) {
-      next(
-        new CustomError(
-          "0 games matching the filter",
-          404,
-          "0 games matching the filter"
-        )
-      );
-      return;
-    }
-
-    res.status(200).json({ filteredGames });
-  } catch (error: unknown) {
-    debug((error as Error).message);
-    const customError = new CustomError(
-      "Error filtering games",
-      500,
-      "Error filtering games"
     );
 
     next(customError);
