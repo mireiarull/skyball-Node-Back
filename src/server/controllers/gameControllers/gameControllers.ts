@@ -96,7 +96,6 @@ export const addOneGame = async (
       ...game,
       players,
       owner: userId,
-      dateTime: new Date(game.dateTime),
     });
 
     res.status(201).json({
@@ -208,7 +207,7 @@ export const updateOneGame = async (
 };
 
 export const getGamesByDate = async (
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -224,7 +223,7 @@ export const getGamesByDate = async (
   try {
     const filteredGames = await Game.find({
       dateTime: {
-        $gte: startTime.toJSDate(),
+        $gte: startTime,
         $lt: endTime.toJSDate(),
       },
     }).sort({ dateTime: "asc" });
