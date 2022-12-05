@@ -6,10 +6,6 @@ export interface GameStructureWithId extends GameStructure {
 
 export interface GameFormData {
   dateTime: string;
-  location: {
-    type: string;
-    coordinates: number[];
-  };
   beachName: string;
   level: number;
   gender: "M" | "F" | "X";
@@ -20,4 +16,6 @@ export interface GameFormData {
   net: boolean;
   rods: boolean;
   image: unknown;
+  latitude: number;
+  longitude: number;
 }
