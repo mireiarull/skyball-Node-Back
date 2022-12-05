@@ -125,11 +125,17 @@ export const addOneGame = async (
     },
   ];
 
+  const gameLocation = {
+    type: "Point",
+    coordinates: [game.longitude, game.latitude],
+  };
+
   try {
     const newGame = await Game.create({
       ...game,
       players,
       owner: userId,
+      location: gameLocation,
     });
 
     res.status(201).json({
