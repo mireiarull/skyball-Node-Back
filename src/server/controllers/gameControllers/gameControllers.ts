@@ -58,6 +58,7 @@ export const getAllGames = async (
     } else {
       countGames = await Game.countDocuments().exec();
       games = await Game.find()
+        .sort({ dateTime: "asc" })
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit)
         .exec();
