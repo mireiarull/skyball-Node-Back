@@ -45,9 +45,11 @@ describe("Given a getAllGames controller", () => {
         .mockReturnValue({ exec: jest.fn().mockReturnValue(5) });
 
       Game.find = jest.fn().mockReturnValue({
-        skip: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue({
-            exec: jest.fn().mockReturnValue(gameList),
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              exec: jest.fn().mockReturnValue(gameList),
+            }),
           }),
         }),
       });
@@ -69,9 +71,11 @@ describe("Given a getAllGames controller", () => {
   describe("When it receives a request without a filter date in its params and Game.find rejects", () => {
     test("Then next should be invoked with an error", async () => {
       Game.find = jest.fn().mockReturnValue({
-        skip: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue({
-            exec: jest.fn().mockReturnValue(null),
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              exec: jest.fn().mockReturnValue(null),
+            }),
           }),
         }),
       });
@@ -89,9 +93,11 @@ describe("Given a getAllGames controller", () => {
         .mockReturnValue({ exec: jest.fn().mockReturnValue(0) });
 
       Game.find = jest.fn().mockReturnValue({
-        skip: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue({
-            exec: jest.fn().mockReturnValue([]),
+        sort: jest.fn().mockReturnValue({
+          skip: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue({
+              exec: jest.fn().mockReturnValue([]),
+            }),
           }),
         }),
       });
