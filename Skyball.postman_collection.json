@@ -1,252 +1,213 @@
 {
-	"info": {
-		"_postman_id": "d4b72040-731d-496d-bba6-4e105a8c4b65",
-		"name": "Skyball",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "23874664"
-	},
-	"item": [
-		{
-			"name": "Register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"password\": \"123456\",\r\n        \"email\": \"mireia@gmail.com\",\r\n        \"name\": \"mireia\",\r\n        \"gender\": \"f\",\r\n        \"level\": 2\r\n      }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}users/register",
-					"host": [
-						"{{url}}users"
-					],
-					"path": [
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}users/login",
-					"host": [
-						"{{url}}users"
-					],
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetAllGames",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}games/list",
-					"host": [
-						"{{url}}games"
-					],
-					"path": [
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "AddOneGame",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5NjI4ODE3fQ.oCrGFw3EkEDU0yblvIhewGKi7PW2czpljVGrLoSRSeo",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n            \"location\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    41.393832352040285,\r\n                    2.2061303160935806\r\n                ]\r\n            },\r\n            \"date\": \"2011-09-16T10:05:17.000Z\",\r\n            \"beachName\": \"Playa Barceloneta\",\r\n            \"level\": 2,\r\n            \"gender\": \"F\",\r\n            \"format\": 2,\r\n            \"spots\": 6,\r\n            \"description\": \"test game\",\r\n            \"players\": [\r\n                {\r\n                    \"material\": {\r\n                        \"net\": true,\r\n                        \"ball\": true,\r\n                        \"rods\": false\r\n                    },\r\n                    \"userId\": \"637f7cb25d194a522132e02d\",\r\n                    \"rol\": \"owner\"\r\n                }\r\n            ]\r\n        }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}games/add",
-					"host": [
-						"{{url}}games"
-					],
-					"path": [
-						"add"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "DeleteOneGame",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5OTgzOTk0fQ.sGR4noSIgazieLpoYd0jk10oTIDroifXhyiqRKgndsc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{url}}games/delete/6389e306a9781fca2a9f9e56",
-					"host": [
-						"{{url}}games"
-					],
-					"path": [
-						"delete",
-						"6389e306a9781fca2a9f9e56"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "GetOneGame",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5NjI4ODE3fQ.oCrGFw3EkEDU0yblvIhewGKi7PW2czpljVGrLoSRSeo",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}games/638b73853ac05c83d9605ebb",
-					"host": [
-						"{{url}}games"
-					],
-					"path": [
-						"638b73853ac05c83d9605ebb"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "UpdateOneGame",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5OTgzOTk0fQ.sGR4noSIgazieLpoYd0jk10oTIDroifXhyiqRKgndsc",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n            \"dateTime\": \"2022-12-02T11:32:45.457Z\",\r\n            \"beachName\": \"Hxjzj\",\r\n            \"level\": 2,\r\n            \"gender\": \"X\",\r\n            \"format\": 3,\r\n            \"spots\": 0,\r\n            \"description\": \"\",\r\n            \"players\": [\r\n                {\r\n                    \"material\": {\r\n                        \"net\": false,\r\n                        \"ball\": false,\r\n                        \"rods\": false\r\n                    },\r\n                    \"userId\": \"637f7cb25d194a522132e02d\",\r\n                    \"rol\": \"owner\",\r\n                    \"id\": \"6389e306a9781fca2a9f9e57\"\r\n                }\r\n            ],\r\n            \"image\": \"3DF1B02B-9492-4973-BB87-07ACF6C95D08-1669980933645.webp\",\r\n            \"backupImage\": \"https://vdxwtabgcdkcwbmiudsn.supabase.co/storage/v1/object/public/game-images/3DF1B02B-9492-4973-BB87-07ACF6C95D08-1669980933645.webp\",\r\n            \"owner\": \"637f7cb25d194a522132e02d\",\r\n            \"id\": \"6389e306a9781fca2a9f9e56\"\r\n        }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}games/update/6389e306a9781fca2a9f9e56",
-					"host": [
-						"{{url}}games"
-					],
-					"path": [
-						"update",
-						"6389e306a9781fca2a9f9e56"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "AddPlayer",
-			"request": {
-				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "{{url}}games/update/6389e306a9781fca2a9f9e56",
-					"host": [
-						"{{url}}games"
-					],
-					"path": [
-						"update",
-						"6389e306a9781fca2a9f9e56"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "url",
-			"value": "http://localhost:4000/",
-			"type": "string"
-		}
-	]
+  "info": {
+    "_postman_id": "d4b72040-731d-496d-bba6-4e105a8c4b65",
+    "name": "Skyball",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23874664"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"password\": \"123456\",\r\n        \"email\": \"mireia@gmail.com\",\r\n        \"name\": \"mireia\",\r\n        \"gender\": \"f\",\r\n        \"level\": 2\r\n      }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}users/register",
+          "host": ["{{url}}users"],
+          "path": ["register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}users/login",
+          "host": ["{{url}}users"],
+          "path": ["login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetAllGames",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}games/list",
+          "host": ["{{url}}games"],
+          "path": ["list"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddOneGame",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5NjI4ODE3fQ.oCrGFw3EkEDU0yblvIhewGKi7PW2czpljVGrLoSRSeo",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n            \"location\": {\r\n                \"type\": \"Point\",\r\n                \"coordinates\": [\r\n                    41.393832352040285,\r\n                    2.2061303160935806\r\n                ]\r\n            },\r\n            \"date\": \"2011-09-16T10:05:17.000Z\",\r\n            \"beachName\": \"Playa Barceloneta\",\r\n            \"level\": 2,\r\n            \"gender\": \"F\",\r\n            \"format\": 2,\r\n            \"spots\": 6,\r\n            \"description\": \"test game\",\r\n            \"players\": [\r\n                {\r\n                    \"material\": {\r\n                        \"net\": true,\r\n                        \"ball\": true,\r\n                        \"rods\": false\r\n                    },\r\n                    \"userId\": \"637f7cb25d194a522132e02d\",\r\n                    \"rol\": \"owner\"\r\n                }\r\n            ]\r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}games/add",
+          "host": ["{{url}}games"],
+          "path": ["add"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteOneGame",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5OTgzOTk0fQ.sGR4noSIgazieLpoYd0jk10oTIDroifXhyiqRKgndsc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{url}}games/delete/6389e306a9781fca2a9f9e56",
+          "host": ["{{url}}games"],
+          "path": ["delete", "6389e306a9781fca2a9f9e56"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetOneGame",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5NjI4ODE3fQ.oCrGFw3EkEDU0yblvIhewGKi7PW2czpljVGrLoSRSeo",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{url}}games/638b73853ac05c83d9605ebb",
+          "host": ["{{url}}games"],
+          "path": ["638b73853ac05c83d9605ebb"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateOneGame",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5OTgzOTk0fQ.sGR4noSIgazieLpoYd0jk10oTIDroifXhyiqRKgndsc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n            \"dateTime\": \"2022-12-02T11:32:45.457Z\",\r\n            \"beachName\": \"Hxjzj\",\r\n            \"level\": 2,\r\n            \"gender\": \"X\",\r\n            \"format\": 3,\r\n            \"spots\": 0,\r\n            \"description\": \"\",\r\n            \"players\": [\r\n                {\r\n                    \"material\": {\r\n                        \"net\": false,\r\n                        \"ball\": false,\r\n                        \"rods\": false\r\n                    },\r\n                    \"userId\": \"637f7cb25d194a522132e02d\",\r\n                    \"rol\": \"owner\",\r\n                    \"id\": \"6389e306a9781fca2a9f9e57\"\r\n                }\r\n            ],\r\n            \"image\": \"3DF1B02B-9492-4973-BB87-07ACF6C95D08-1669980933645.webp\",\r\n            \"backupImage\": \"https://vdxwtabgcdkcwbmiudsn.supabase.co/storage/v1/object/public/game-images/3DF1B02B-9492-4973-BB87-07ACF6C95D08-1669980933645.webp\",\r\n            \"owner\": \"637f7cb25d194a522132e02d\",\r\n            \"id\": \"6389e306a9781fca2a9f9e56\"\r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}games/update/6389e306a9781fca2a9f9e56",
+          "host": ["{{url}}games"],
+          "path": ["update", "6389e306a9781fca2a9f9e56"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddPlayer",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{url}}games/update/6389e306a9781fca2a9f9e56",
+          "host": ["{{url}}games"],
+          "path": ["update", "6389e306a9781fca2a9f9e56"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": "http://localhost:4000/",
+      "type": "string"
+    }
+  ]
 }
