@@ -103,7 +103,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5NjI4ODE3fQ.oCrGFw3EkEDU0yblvIhewGKi7PW2czpljVGrLoSRSeo",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5OTgzOTk0fQ.sGR4noSIgazieLpoYd0jk10oTIDroifXhyiqRKgndsc",
               "type": "string"
             }
           ]
@@ -111,9 +111,9 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "{{url}}games/delete/638779cb370c0bf73d390741",
+          "raw": "{{url}}games/delete/6389e306a9781fca2a9f9e56",
           "host": ["{{url}}games"],
-          "path": ["delete", "638779cb370c0bf73d390741"]
+          "path": ["delete", "6389e306a9781fca2a9f9e56"]
         }
       },
       "response": []
@@ -134,9 +134,54 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{url}}games/63877965370c0bf73d390736",
+          "raw": "{{url}}games/638b73853ac05c83d9605ebb",
           "host": ["{{url}}games"],
-          "path": ["63877965370c0bf73d390736"]
+          "path": ["638b73853ac05c83d9605ebb"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateOneGame",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsImlkIjoiNjM3ZjdjYjI1ZDE5NGE1MjIxMzJlMDJkIiwiaWF0IjoxNjY5OTgzOTk0fQ.sGR4noSIgazieLpoYd0jk10oTIDroifXhyiqRKgndsc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n            \"dateTime\": \"2022-12-02T11:32:45.457Z\",\r\n            \"beachName\": \"Hxjzj\",\r\n            \"level\": 2,\r\n            \"gender\": \"X\",\r\n            \"format\": 3,\r\n            \"spots\": 0,\r\n            \"description\": \"\",\r\n            \"players\": [\r\n                {\r\n                    \"material\": {\r\n                        \"net\": false,\r\n                        \"ball\": false,\r\n                        \"rods\": false\r\n                    },\r\n                    \"userId\": \"637f7cb25d194a522132e02d\",\r\n                    \"rol\": \"owner\",\r\n                    \"id\": \"6389e306a9781fca2a9f9e57\"\r\n                }\r\n            ],\r\n            \"image\": \"3DF1B02B-9492-4973-BB87-07ACF6C95D08-1669980933645.webp\",\r\n            \"backupImage\": \"https://vdxwtabgcdkcwbmiudsn.supabase.co/storage/v1/object/public/game-images/3DF1B02B-9492-4973-BB87-07ACF6C95D08-1669980933645.webp\",\r\n            \"owner\": \"637f7cb25d194a522132e02d\",\r\n            \"id\": \"6389e306a9781fca2a9f9e56\"\r\n        }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{url}}games/update/6389e306a9781fca2a9f9e56",
+          "host": ["{{url}}games"],
+          "path": ["update", "6389e306a9781fca2a9f9e56"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddPlayer",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "url": {
+          "raw": "{{url}}games/update/6389e306a9781fca2a9f9e56",
+          "host": ["{{url}}games"],
+          "path": ["update", "6389e306a9781fca2a9f9e56"]
         }
       },
       "response": []
